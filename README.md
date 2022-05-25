@@ -6,3 +6,8 @@ Code to generate an illustration of the extendable taxonomy lives [here](https:/
 
 ## Metrics
 Code for the metrics can be imported from [ProClaM](https://github.com/aimalz/proclam) (Probabilistic Classification Metrics), which is Python 3 code developed for PLAsTiCC to model classifier archetypes and evaluate metrics.
+
+## Training sample
+
+The training sample for ELAsTiCC can be found on the ELAsTiCC web page
+at: https://portal.nersc.gov/cfs/lsst/DESC_TD_PUBLIC/ELASTICC/
