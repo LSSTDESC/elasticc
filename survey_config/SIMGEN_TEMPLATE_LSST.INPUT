@@ -1,0 +1,93 @@
+# May 26 2022 R.Kessler - add few more SIMGEN-dump variables
+
+NGENTOT_LC: 255
+GENVERSION: RKTEST_BLA
+GENSOURCE:  RANDOM   
+GENMODEL:   TRANSIENT
+#2ndARG # see INCLUDE files
+
+#DNDZ:  FLAT    # XXX
+
+SIMLIB_FILE:  $SNANA_LSST_ROOT/simlibs/PLASTICC_ORIGINAL_DDF.SIMLIB
+
+SIMLIB_MSKOPT:   128  # include the entire season containing detection
+
+
+# realistic photo-z library from Graham 2018;
+# hostlib is overwritten in simgen-master file
+HOSTLIB_FILE:  $SNANA_LSST_ROOT/simlibs/PLASTICC_ORIGINAL_photoz_G18.HOSTLIB
+HOSTLIB_DZTOL: 0.02 0.01 0.007  # Jan 2022 recommended by Martine+Alex
+HOSTLIB_MSKOPT:  258  # 2=noise + 256=verbose
+
+# ---------------------------------------------------
+
+SOLID_ANGLE:  0.0  # 3/Nov/2021: 0 is a flag to use solid angle in SIMLIB
+
+RANSEED:        123459
+FORMAT_MASK:    32  ! 2=TEXT  32=FITS
+
+GENFILTERS:   ugrizY
+KCOR_FILE:    $SNANA_LSST_ROOT/kcor/2017-04_approx/kcor_LSST.fits
+
+# Baseline v2.0 below (17/Jan/2022; C.Alves)
+GENRANGE_MJD:   60275 61380  # explicit MJD cut after 3 years
+GENRANGE_PEAKMJD: 60225 61455  # PEAKMJD cut is wider to catch rise time
+GENSIGMA_SEARCH_PEAKMJD:  1.0
+
+# obsolete minion below (17/Jan/2022; C.Alves)
+#GENRANGE_MJD:      59570 60675   # explicit MJD cut after 3 years
+#GENRANGE_PEAKMJD:  59520 60750   # PEAKMJD cut is wider to catch rise time
+
+
+GENRANGE_REDSHIFT:  0.02   1.20    # XXX
+GENSIGMA_REDSHIFT:  0.001          # 
+GENRANGE_TREST:   -100.0  400.0    # XXX
+
+GENSIGMA_VPEC: 300.0  # peculiar velocity spread without correction, km/sec
+VPEC_ERR:      300.0  # --> no correction
+
+UVLAM_EXTRAPFLUX:  500  # extrapolate fluxes down to 500 A.
+
+MXRADIUS_RANDOM_SHIFT: 0.25  # add a small random coordinate shift each time a simlib entry is accessed 
+
+LENSING_PROBMAP_FILE:  $SNDATA_ROOT/models/lensing/LENSING_PROBMAP_LogNormal+MICECATv1.DAT
+
+# smear flags: 0=off, 1=on
+SMEARFLAG_FLUX:    1  # photo-stat smearing of signal, sky, etc ...
+SMEARFLAG_ZEROPT:  3  # smear zero-point with zptsig
+
+# negative MWEBV-option ==> correct FLUXCAL with map and central filter wave
+OPT_MWEBV: 3         # SFD98 + Schalfly2011
+OPT_MWCOLORLAW: 99   # Fitzpatrick
+
+# 1=> software trigger 3=software & spec trigger
+APPLY_SEARCHEFF_OPT:  1  
+SEARCHEFF_PIPELINE_EFF_FILE:  $SNANA_LSST_ROOT/models/searcheff/PLASTICC_ORIGINAL_SEARCHEFF_PIPELINE_LSST.DAT
+
+# define pipeline logic for trigger (e.g., 2 detetions)
+SEARCHEFF_PIPELINE_LOGIC_FILE:  $SNANA_LSST_ROOT/models/searcheff/SEARCHEFF_PIPELINE_LOGIC_LSST.DAT
+
+# spectroscopic identification efficiency vs. i-band mag
+SEARCHEFF_SPEC_FILE: $SNANA_LSST_ROOT/models/searcheff/PLASTICC_ORIGINAL_LSST_SPECEFF.DAT 
+
+# efficiency vs. redshift for getting zSpec from host
+SEARCHEFF_zHOST_FILE:  $SNANA_LSST_ROOT/models/searcheff/PLASTICC_ORIGINAL_zHOST_4MOST_DDF.DAT 
+
+APPLY_CUTWIN_OPT: 1
+CUTWIN_NOBS_NOSATURATE: 10 9999 grizY
+#CUTWIN_REDSHIFT_FINAL:   0  3  # cut on zFINAL = zSpec or zPhot
+CUTWIN_HOST_ZPHOT:       0  3   # cut on zPHOT(host)
+CUTWIN_MWEBV:            0  3   # cut on E(B-V)
+CUTWIN_PEAKMAG_ALL:     14 999  # cut bright flux or template, any band
+
+NEWMJD_DIF: 0.021  # to make trigger, 30 min between detections
+
+# Create one-row-per-transient summary of the events written out
+SIMGEN_DUMP:  35
+   CID LIBID  SIM_SEARCHEFF_MASK  GENTYPE  NON1A_INDEX
+   ZCMB ZHELIO ZCMB_SMEAR RA DEC MWEBV
+   GALID GALZPHOT GALZPHOTERR  GALSNSEP GALSNDDLR  RV AV
+   MU LENSDMU PEAKMJD MJD_DETECT_FIRST MJD_DETECT_LAST DTSEASON_PEAK
+   PEAKMAG_u PEAKMAG_g PEAKMAG_r PEAKMAG_i PEAKMAG_z PEAKMAG_Y
+   SNRMAX SNRMAX2 SNRMAX3 NOBS NOBS_SATURATE
+
