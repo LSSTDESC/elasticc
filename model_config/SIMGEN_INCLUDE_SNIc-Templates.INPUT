@@ -1,0 +1,42 @@
+# SN Ic template models
+# 19/July/2018: remove 270 due to strange LC artifacts
+# 12/Aug/2018: remove SDSS-013195, SDSS-014475, SNLS-04D1la
+#                (artifact warning from Justin)
+# 9/Nov/2021 C.Alves: Set only the SN Ic models in this file instead of including both SN Ib and SN Ic
+# 9/Nov/2021 C.Alves: Change DNDZ_ALLSCALE to 0.033 = 22% * 30% * 50% = Table 3 of the Shivvers+2017 paper * 30% of CC SN are SN Ibc * half will be simulated using V19 models and the other half from this model
+# 11/Nov/2021 C.Alves: Changed DNDZ_ALLSCALE to 0.0375 = 24.7% * 30.4% * 50% =
+# 			24.7% of Stripped Envelope CC SN are SN Ic
+#                       * 30.4% of CC SN are Stripped Envelope
+#                       * 50% simulated with V19 models and the other half with this model
+#               Values from Table 3 of Shivvers+2017 (10.1088/1538-3873/aa54a6) 
+
+GENMODEL:  NON1ASED
+PATH_NON1ASED:  $PLASTICC_MODELS/NON1ASED.SNIbc-Templates
+
+# Volumetric rate
+DNDZ:  CC_S15                   # Strolger 2015 (HST; 1509.06574)
+DNDZ_ALLSCALE:  0.0375  # 11/Nov/2021 C.Alves: 24.7% * 35.6% * 50% ; see comment from same date 
+
+GENRANGE_REDSHIFT: 0.011  1.50
+
+GENRANGE_TREST:	 -50 300
+
+# Some of the models plateau at	end of epoch range,
+# so force min mag/day slope for late-time extrapolation.
+MINSLOPE_EXTRAPMAG_LATE: 0.01
+
+# -----------------------------------------
+# User-generated comments: 
+#   MAGOFF and MAGSMEAR adjusted to match m_R peak and sigma 
+#   in Table 6 of Li et al, 2010 (arXiv:1006.4612) 
+#    
+
+NON1A_KEYS: 5 
+         INDEX   WGT    MAGOFF   MAGSMEAR  SNTYPE 
+NON1A:    022   0.0167   1.480     1.100     3    # Ic   (SNLS-04D4jv)
+NON1A:    101   0.0167   1.480     1.100     3    # Ic   (CSP-2004fe)
+NON1A:    102   0.0167   1.480     1.100     3    # Ic   (CSP-2004gq)
+NON1A:    205   0.0167   1.480     1.100     3    # Ic   (SDSS-004012)
+NON1A:    217   0.0167   1.480     1.100     3    # Ic   (SDSS-015475)
+NON1A:    218   0.0167   1.480     1.100     3    # Ic   (SDSS-017548)
+

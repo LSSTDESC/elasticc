@@ -1,0 +1,62 @@
+# SN IIn models from Vincenzi et al. 2019
+# 31/Aug/2021 C.Alves, R.Kessler: SN II subset of V19 models + change DNDZ_ALLSCALE from 1.0 to 0.7
+# 28/Oct/2021 C.Alves: Changed DNDZ_ALLSCALE from 0.7 to 0.35 because for ELAsTiCC half of the CC SN are from V19 models and the other half are other models
+# 9/Nov/2021 C.Alves: SN II (IIP, IIL, IIn) subset of V19 models + change DNDZ_ALLSCALE to 0.35 = 70% * 50% = 70% of CC SN are NOT stripped envelope * 50% simulated using V19 models and 50% from other models  
+# 10/Nov/2021 C.Alves: SN IIn subset of V19 models
+# 11/Nov/2021 C.Alves: Changed DNDZ_ALLSCALE to 0.0235 = 6.7% * 69.6% * 50% =
+#               6.7% of Hydrogen rich CC SN are SN IIn
+#               * 69.6% of CC SN are Hydrogen rich 
+#               * 50% simulated with V19 models and the other half with SNIIn-MOSFIT model
+#               Values from Table 3 of Shivvers+2017 (10.1088/1538-3873/aa54a6)  
+# 21/Dec/2021 C.Alves: Changed GENRANGE_REDSHIFT upper bound from 1.5 to 1.6 to ensure all the possibly detected supernovae are simulated.
+# 4/Feb/2022 C.Alves: Changed GENRANGE_REDSHIFT upper bound from 1.6 to 1.8 to ensure all the possibly detected supernovae are simulated.
+
+GENMODEL:  NON1ASED
+PATH_NON1ASED:  $PLASTICC_ROOT/model_libs_updates/NON1ASED.V19_CC+HostXT
+
+# Volumetric rate
+DNDZ: CC_S15          # rate from Strolger 2015 (HST; 1509.06574)
+DNDZ_ALLSCALE:  0.0235  # 11/Nov/2021 C.Alves: 6.7% * 69.6% * 50% ; see comment from same date
+
+GENRANGE_REDSHIFT: 0.011  1.80
+
+# GN:  we'll just assert that since we're simulating all CC types
+# we can just follow the Strolger 2015 rate 
+# this needs the relative rates in the CC sample 
+# in Vincenzi 19 to follow the same distribution 
+# as actual CC relative rate
+# note below indicates that's happeing (Shivvers et al. 2017)
+# probably good to check this though
+GENRANGE_TREST:  -50 300
+
+# Some of the models plateau at	end of epoch range,
+# so force min mag/day slope for late-time extrapolation.
+MINSLOPE_EXTRAPMAG_LATE: 0.01
+
+# -----------------------------------------
+# TEMPLATES presented in Vincenzi et al. 2019 (arXiv:1908.05228)
+# TEMPLATES used here HAS BEEN corrected for host and MW extinction.
+#   MAGOFF and MAGSMEAR adjusted to match LF from Richardson. et al 2014.
+#   For more details see Vincenzi et al. 2019 (Table 1, Section 4.1)
+#   Richardson et al. LFs use a sample of SNe that HAS BEEN corrected 
+#   for host extinction.
+#   WGT	(relative rates) from Shivvars et al. 2017 
+#   (also reported in Vincenzi et al. 2019, Table 1)
+#
+#
+# II    --> 25 (IIP+IIL, no distinction)
+# IIn   --> 21 # current file
+# IIb   --> 23
+# Ib    --> 32
+# Ic    --> 33
+# Ic-BL --> 35
+
+
+NON1A_KEYS: 5
+                INDEX   WGT    MAGOFF   MAGSMEAR  SNTYPE
+NON1A:          751  0.007841   -0.35      1.15    21    ## IIn    SN2011ht
+NON1A:          745  0.007841   -0.35      1.15    21    ## IIn    SN2010al
+NON1A:          740  0.007841   -0.35      1.15    21    ## IIn    SN2009ip
+NON1A:          725  0.007841   -0.35      1.15    21    ## IIn    SN2007pk
+NON1A:          734  0.007841   -0.35      1.15    21    ## IIn    SN2008fq
+NON1A:          719  0.007841   -0.35      1.15    21    ## IIn    SN2006aa

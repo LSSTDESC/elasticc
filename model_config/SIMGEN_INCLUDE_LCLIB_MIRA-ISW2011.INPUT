@@ -1,0 +1,10 @@
+GENMODEL:  LCLIB  $PLASTICC_MODELS/LCLIB_MIRA_ISW2011.TEXT 1+2+3+4
+
+# Fit b>5 deg to 5th order polynomial and use for both
+# b>0 and b<0 --> ignore structure from Sagitarius.
+#
+
+DNDB: BPOLY   20383 -1757.7 65.293 -1.1885 0.10405E-01 -0.35119E-04
+
+NGENTOT_LC: 1500
+

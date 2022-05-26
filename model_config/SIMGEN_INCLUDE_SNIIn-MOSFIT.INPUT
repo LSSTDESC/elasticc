@@ -1,0 +1,37 @@
+# IIn model (from MOSFIT group)
+# 13/Aug/2021 C.Alves, R.Kessler: Added the RV parameters to avoid SIM abort
+# 28/Oct/2021 C.Alves: Changed DNDZ_ALLSCALE from 0.06 to 0.03 because for ELAsTiCC half of the CC SN are from V19 models
+# 11/Nov/2021 C.Alves: Changed DNDZ_ALLSCALE to 0.0235 = 6.7% * 69.6% * 50% =
+# 		6.7% of Hydrogen rich CC SN are SN IIn
+#               * 69.6% of CC SN are Hydrogen rich 
+#               * 50% simulated with V19 models and the other half with this model 
+#               Values from Table 3 of Shivvers+2017 (10.1088/1538-3873/aa54a6) 
+# 21/Dec/2021 C.Alves: Changed GENRANGE_REDSHIFT upper bound from 2.0 to 2.2 to ensure all the possibly detected supernovae are simulated.
+
+GENMODEL: $PLASTICC_MODELS/SIMSED.SNIIn-MOSFIT
+GENAV_WV07:   1       # WV07, Eq. 2
+GENRANGE_AV:  0  3    # CCM89 AV-extinctionrange
+
+GENPEAK_RV:       3.1          # peak prob dust parameter
+GENRANGE_RV:      3.0  3.2     # min and max limits for RV generation
+GENSIGMA_RV:      0.0  0.0     # lo & hi Gaussian sigmas
+
+SIMSED_USE_BINARY:   1
+SIMSED_PATH_BINARY:  $PLASTICC_MODELS/SIMSED_BINARIES
+
+# S15 rate at z=0 is R0(CC) = 0.7E-4.
+# IIn rate at z=0 from MOSFIT is R0(IIn) = 4E-6
+#  --> IIn fraction is 6%
+
+# Volumetric rate
+DNDZ: CC_S15          # rate from Strolger 2015 (HST; 1509.06574)
+DNDZ_ALLSCALE:  0.0235  # 11/Nov/2021 C.Alves: 6.7% * 69.6% * 50% ; see comment from same date
+
+#GENRANGE_REDSHIFT:  0.03 2.0
+GENRANGE_REDSHIFT:  0.03 2.2
+
+# ==============================
+# SIMSED GRID PARAMETERS
+# Eqal prob per SED
+
+SIMSED_GRIDONLY:  IIN_INDEX

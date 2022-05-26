@@ -1,0 +1,7 @@
+GENMODEL:  LCLIB  $PLASTICC_MODELS/LCLIB_EB-PHOEBE.TEXT 1+2+3+4
+
+# rel rate = 5th order poly in cos(b)
+DNDB: BPOLY   20383 -1757.7 65.293 -1.1885 0.10405E-01 -0.35119E-04
+
+NGENTOT_LC: 220000                 # total number to generate
+

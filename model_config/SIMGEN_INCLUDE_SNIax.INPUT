@@ -1,0 +1,26 @@
+# SN~Iax from Saurabh
+
+
+GENMODEL: $PLASTICC_ROOT/model_libs_updates/SIMSED.SNIax
+
+SIMSED_USE_BINARY:   1
+SIMSED_PATH_BINARY:  $PLASTICC_MODELS/SIMSED_BINARIES
+
+
+# Volumetric rate
+DNDZ: MD14  6.0E-6      # MD14 SFR(z), with 6E-6/yr/Mpc^3 at z=0
+GENRANGE_REDSHIFT:  0.011   1.5
+
+# Extinction
+# GN updated 20210321 per RK - these are Maria Vincenzi's Galaxy Extinction params
+GENPEAK_RV:       3.1          # peak prob dust parameter
+GENRANGE_RV:      3.0  3.2     # min and max limits for RV generation
+GENSIGMA_RV:      0.0  0.0     # lo & hi Gaussian sigmas
+GENRANGE_AV:      0.001  3.0   # CCM89 V-band extinction
+GENTAU_AV:        1.7          # dN/dAV = exp(-AV/xxx)
+GENSIG_AV:        0.6          # += Guass(AV,sigma)
+GENRATIO_AV0:     4.0
+
+# random pick of each SED sequence
+
+SIMSED_GRIDONLY:  Iax_INDEX

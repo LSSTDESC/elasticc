@@ -1,0 +1,19 @@
+# R.Kessler Jan 5 2022:
+#   reduce NGENTOT fom 200k -> 50k to avoid swamping file system
+#   with too many alerts.
+
+GENMODEL:  LCLIB  $PLASTICC_MODELS/LCLIB_RRL-LSST.TEXT 1+2+3+4
+
+# Rate from
+#   http://iopscience.iop.org/article/10.3847/1538-3881/aa661b/pdf
+#   http://adsabs.harvard.edu/abs/2017yCat..18380107S
+#
+# Fit b>5 deg to 5th order polynomial and use for both
+# b>0 and b<0 --> ignore structure from Sagitarius.
+#
+
+DNDB: BPOLY   20383 -1757.7 65.293 -1.1885 0.10405E-01 -0.35119E-04
+
+
+NGENTOT_LC: 50000   # total number to generate
+

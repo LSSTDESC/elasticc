@@ -1,0 +1,29 @@
+# Jun 24 2018: include improved late-time model extrapolation
+# 21/Dec/2021 C.Alves: Changed GENRANGE_REDSHIFT upper bound from 1.55 to 1.65 to ensure all the possibly detected supernovae are simulated.
+
+GENMODEL:  SALT2.WFIRST-H17
+GENMODEL_EXTRAP_LATETIME: $PLASTICC_MODELS/SNIa_Extrap_LateTime_2expon.TEXT
+
+GENMAG_SMEAR_MODELNAME: G10
+
+# Use rate assumption from Housell 2017 (WFIRST sims)
+DNDZ: POWERLAW2 2.5E-5  1.5 0.0 1.0    # from Didlay 2008
+DNDZ: POWERLAW2 9.7E-5 -0.5 1.0 3.0    # high-z extenstion from Lou
+
+GENRANGE_REDSHIFT:  0.011  1.65
+GENRANGE_TREST:     -100   300
+
+# --------------------------------------------------
+# define SALT2 params from Scolnic et al 2016, using G10 High-z row
+
+GENPEAK_SALT2c:    -0.054
+GENSIGMA_SALT2c:    0.043  0.101     # bifurcated sigmas
+GENRANGE_SALT2c:   -0.300  0.500     # color range
+
+GENPEAK_SALT2x1:     0.973
+GENSIGMA_SALT2x1:    1.472   0.222     # bifurcated sigmas
+GENRANGE_SALT2x1:   -3.0     2.0       # x1 (stretch) range
+
+
+GENMEAN_SALT2ALPHA:   0.14
+GENMEAN_SALT2BETA:    3.1

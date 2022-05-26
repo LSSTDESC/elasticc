@@ -1,0 +1,34 @@
+# TDE from MOSFIT group
+
+GENMODEL: $PLASTICC_MODELS/SIMSED.TDE-MOSFIT
+#GENAV_WV07:   1      # WV07, Eq. 2
+GENTAU_AV:    0.4     # expon component only, no Gauss core
+GENRANGE_AV:  0 3     # CCM89 AV-extinctionrange
+
+GENPEAK_RV:   3.1
+GENRANGE_RV:  1.0  5.0
+GENSIGMA_RV:  0.0  0.0
+
+SIMSED_USE_BINARY:   1
+SIMSED_PATH_BINARY:  $PLASTICC_MODELS/SIMSED_BINARIES
+
+# Volumetric rate from 1707.03458, (8 +- 4) × 10−7 /Mpc^3/yr
+# z-dependence from 
+#   http://adsabs.harvard.edu/abs/2016MNRAS.tmp..944K
+#
+#DNDZ: MD14  1.0E-6                 # MD14 SFR(z), with 1E-6/yr/Mpc^3 at z=0
+#DNDZ_ZPOLY_REWGT: 1.0 -0.8  0.25  -0.03  # temp fudge
+
+
+#DNDZ: EPM 0.8E-7  # from van Velson 2017, Sec 5.2
+DNDZ: TDE  1.0E-6 
+GENRANGE_REDSHIFT:  0.01   2.9
+
+GENRANGE_TREST:   -100.0  500.0
+#GENRANGE_TREST:   -50.0  100.0
+
+# ==============================
+# SIMSED GRID PARAMETERS
+# Eqal prob per SED
+
+SIMSED_GRIDONLY:  TDE_INDEX

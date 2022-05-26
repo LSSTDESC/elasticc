@@ -1,0 +1,42 @@
+# SN Ib template models
+# 19/July/2018: remove 270 due to strange LC artifacts
+# 12/Aug/2018: remove SDSS-013195, SDSS-014475, SNLS-04D1la
+#                (artifact warning from Justin)
+# 9/Nov/2021 C.Alves: Set only the SN Ib models in this file instead of including both SN Ib and SN Ic
+# 9/Nov/2021 C.Alves: Change DNDZ_ALLSCALE to 0.054 = 36% * 30% * 50% = Table 3 of the Shivvers+2017 paper * 30% of CC SN are SN Ibc * half will be simulated using V19 models and the other half from this model
+# 11/Nov/2021 C.Alves: Changed DNDZ_ALLSCALE to 0.054 = 35.6% *  30.4% * 50% =
+# 			35.6% of Stripped Envelope CC SN are SN Ib
+# 			* 30.4% of CC SN are Stripped Envelope
+#             		* 50% simulated with V19 models and the other half with this model
+#		Values from Table 3 of Shivvers+2017 (10.1088/1538-3873/aa54a6) 
+
+GENMODEL:  NON1ASED
+PATH_NON1ASED:  $PLASTICC_MODELS/NON1ASED.SNIbc-Templates
+
+# Volumetric rate
+DNDZ:  CC_S15                   # Strolger 2015 (HST; 1509.06574)
+DNDZ_ALLSCALE:  0.054  # 11/Nov/2021 C.Alves: 35.6% * 30.4% * 50% ; see comment from same date 
+
+GENRANGE_REDSHIFT: 0.011  1.50
+
+GENRANGE_TREST:	 -50 300
+
+# Some of the models plateau at	end of epoch range,
+# so force min mag/day slope for late-time extrapolation.
+MINSLOPE_EXTRAPMAG_LATE: 0.01
+
+# -----------------------------------------
+# User-generated comments: 
+#   MAGOFF and MAGSMEAR adjusted to match m_R peak and sigma 
+#   in Table 6 of Li et al, 2010 (arXiv:1006.4612) 
+#    
+
+NON1A_KEYS: 5 
+         INDEX   WGT    MAGOFF   MAGSMEAR  SNTYPE 
+NON1A:    103   0.0191   0.770     0.410     3    # Ib   (CSP-2004gv)
+NON1A:    104   0.0191   2.670     0.410     3    # Ib   (CSP-2006ep)
+NON1A:    105   0.0191  -0.628     0.410     3    # Ib   (CSP-2007Y)
+NON1A:    202   0.0191   0.346     0.410     3    # Ib   (SDSS-000020)
+NON1A:    203   0.0191  -0.099     0.410     3    # Ib   (SDSS-002744)
+NON1A:    212   0.0191   0.950     0.410     3    # Ib   (SDSS-014492)
+NON1A:    234   0.0191   0.281     0.410     3    # Ib   (SDSS-019323)

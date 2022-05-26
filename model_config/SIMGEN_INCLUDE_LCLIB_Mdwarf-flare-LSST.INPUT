@@ -1,0 +1,16 @@
+# Jan 5 2022 PLASTICC
+#   - set NGENTOT back to 10 million
+# Dec 30 2021 RK
+#   - set NGENTOT to 2 million; with ~1% efficiency for single-detection trigger,
+#     expect 20k events.
+
+GENMODEL:  LCLIB  $PLASTICC_ROOT/model_libs_updates/LCLIB_Mdwarf-flare-LSST.TEXT 1+2+3+4
+
+NGENTOT_LC: 10000000
+
+# LCLIB |b| fit
+DNDB:   BPOLY  -3.28230212e-03,3.01446333e-02,-4.65144034e-03,3.16808686e-04,-1.20480381e-05,2.76898385e-07,-3.92467157e-09,3.34750950e-11,-1.57113870e-13,3.10724077e-16
+
+# Turn extinction off
+OPT_MWEBV: 0        
+OPT_MWCOLORLAW: 0  
