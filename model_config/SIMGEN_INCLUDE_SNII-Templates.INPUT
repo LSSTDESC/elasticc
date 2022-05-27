@@ -1,0 +1,57 @@
+# SN II templates
+# To match Li 2011 Table 6 after removing some templates.
+# MAGOFF = 2.100 -> 1.500 (0.6 mag brighter)
+# 28/Oct/2021 C.Alves: Changed DNDZ_ALLSCALE from 0.35 to 0.175 because for ELAsTiCC half of the CC SN are from V19 models
+# 11/Nov/2021 C.Alves: Changed DNDZ_ALLSCALE to 0.162 = 93.3% * 69.6% * 25% = 
+#               93.3% of Hydrogen rich CC SN are not SN IIn 
+#               * 69.6% of CC SN are Hydrogen rich 
+#               * 50% simulated with V19 models and the other half divided between this model and SNII-NMF
+#               Values from Table 3 of Shivvers+2017 (10.1088/1538-3873/aa54a6)
+# 21/Dec/2021 C.Alves: Changed GENRANGE_REDSHIFT upper bound from 1.5 to 1.6 to ensure all the possibly detected supernovae are simulated. 
+# 4/Feb/2022 C.Alves: Changed GENRANGE_REDSHIFT upper bound from 1.6 to 1.8 to ensure all the possibly detected supernovae are simulated.
+
+GENMODEL:  NON1ASED
+PATH_NON1ASED:  $PLASTICC_MODELS/NON1ASED.SNII-Templates
+
+# Volumetric rate
+DNDZ:  CC_S15                   # Strolger 2015 (HST; 1509.06574)
+DNDZ_ALLSCALE:  0.162  # 11/Nov/2021 C.Alves: 93.3% * 69.6% * 25% ; see comment from same date 
+
+GENRANGE_REDSHIFT: 0.011  1.80
+
+GENRANGE_TREST:  -50 300
+
+# Some of the models plateau at	end of epoch range,
+# so force min mag/day slope for late-time extrapolation.
+MINSLOPE_EXTRAPMAG_LATE: 0.01
+
+# -----------------------------------------
+# 
+# User-generated comments: 
+#   MAGOFF and MAGSMEAR adjusted to match m_R peak and sigma 
+#   in Table 6 of Li et al, 2010 (arXiv:1006.4612) 
+#    
+#
+
+NON1A_KEYS: 5 
+         INDEX   WGT    MAGOFF   MAGSMEAR  SNTYPE 
+NON1A:    201   0.0246   1.500     1.050     2    # IIP  (SDSS-000018)
+NON1A:    204   0.0246   1.500     1.050     2    # IIP  (SDSS-003818)
+NON1A:    208   0.0246   1.500     1.050     2    # IIP  (SDSS-013376)
+NON1A:    210   0.0246   1.500     1.050     2    # IIP  (SDSS-014450)
+NON1A:    213   0.0246   1.500     1.050     2    # IIP  (SDSS-014599)
+NON1A:    214   0.0246   1.500     1.050     2    # IIP  (SDSS-015031)
+NON1A:    215   0.0246   1.500     1.050     2    # IIP  (SDSS-015320)
+NON1A:    216   0.0246   1.500     1.050     2    # IIP  (SDSS-015339)
+NON1A:    220   0.0246   1.500     1.050     2    # IIP  (SDSS-017862)
+NON1A:    221   0.0246   1.500     1.050     2    # IIP  (SDSS-018109)
+NON1A:    222   0.0246   1.500     1.050     2    # IIP  (SDSS-018297)
+NON1A:    223   0.0246   1.500     1.050     2    # IIP  (SDSS-018408)
+NON1A:    224   0.0246   1.500     1.050     2    # IIP  (SDSS-018441)
+NON1A:    225   0.0246   1.500     1.050     2    # IIP  (SDSS-018457)
+NON1A:    226   0.0246   1.500     1.050     2    # IIP  (SDSS-018590)
+NON1A:    227   0.0246   1.500     1.050     2    # IIP  (SDSS-018596)
+NON1A:    228   0.0246   1.500     1.050     2    # IIP  (SDSS-018700)
+NON1A:    229   0.0246   1.500     1.050     2    # IIP  (SDSS-018713)
+NON1A:    230   0.0246   1.500     1.050     2    # IIP  (SDSS-018734)
+NON1A:    235   0.0246   1.500     1.050     2    # IIP  (SDSS-020038)

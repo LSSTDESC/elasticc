@@ -1,0 +1,9 @@
+GENMODEL:  LCLIB  $PLASTICC_MODELS/LCLIB_AGN-LSST.TEXT 1+2+3+4
+
+# Rel rate = 5th order polynominal in cos(b)
+DNDB: COSBPOLY 1  0 0 0 0 0        # AGN are isotropic
+NGENTOT_LC: 175000                 # total number to generate
+
+# restrict AGN redshift to ZTRUE range of G18 photo-z library
+#LCLIB_CUTWIN:  REDSHIFT 0.05 3.45
+LCLIB_CUTWIN:  REDSHIFT 0.05 2.95  # 21/Dec/2021: To be within ELASTICC hostlib range

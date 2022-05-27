@@ -1,0 +1,26 @@
+# Ca Rich Transients (from MOSFIT group)
+# Nov 1 2021 R.Kessler - Add explicit RV
+
+GENMODEL: $PLASTICC_MODELS/SIMSED.CART-MOSFIT
+GENAV_WV07:   1       # WV07, Eq. 2
+GENRANGE_AV:  0  3    # CCM89 AV-extinctionrange
+
+GENPEAK_RV:       3.1          # peak prob dust parameter
+GENRANGE_RV:      3.0  3.2     # min and max limits for RV generation
+GENSIGMA_RV:      0.0  0.0     # lo & hi Gaussian sigmas
+
+SIMSED_USE_BINARY:   1
+SIMSED_PATH_BINARY:  $PLASTICC_MODELS/SIMSED_BINARIES
+
+# Volumetric rate
+DNDZ: MD14    2.3E-6  # MD14 SFR(z) with 2.3E-6/yr/Mpc^3 at z=0
+GENRANGE_REDSHIFT:  0.012   1.4
+
+GENRANGE_TREST:   -100.0  500.0
+#GENRANGE_TREST:   -50.0  100.0
+
+# ==============================
+# SIMSED GRID PARAMETERS
+# Eqal prob per SED
+
+SIMSED_GRIDONLY:  Cart_INDEX

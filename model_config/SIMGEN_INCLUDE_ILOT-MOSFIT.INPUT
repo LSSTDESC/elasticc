@@ -1,0 +1,28 @@
+# ILOT (Intermediate Luminosity Optical Transients)
+# Nov 1 2021: add explicit RV
+# Dec 27 2021 R.Kessler - reduce zmax from 1.5 to 0.5
+
+GENMODEL: $PLASTICC_MODELS/SIMSED.ILOT-MOSFIT
+GENAV_WV07:   1       # WV07, Eq. 2
+GENRANGE_AV:  0  3    # CCM89 AV-extinctionrange
+
+GENPEAK_RV:       3.1          # peak prob dust parameter
+GENRANGE_RV:      3.0  3.2     # min and max limits for RV generation
+GENSIGMA_RV:      0.0  0.0     # lo & hi Gaussian sigmas
+
+SIMSED_USE_BINARY:   1
+SIMSED_PATH_BINARY:  $PLASTICC_MODELS/SIMSED_BINARIES
+
+# Volumetric rate is same as for IIn
+DNDZ: CC_S15         # rate from Strolger 2015 (HST)
+DNDZ_ALLSCALE: 0.06
+#GENRANGE_REDSHIFT:  0.011 1.50
+GENRANGE_REDSHIFT:  0.011 0.50
+
+GENRANGE_TREST:   -100.0  1000.0
+
+# ==============================
+# SIMSED GRID PARAMETERS
+# Eqal prob per SED
+
+SIMSED_GRIDONLY:  ILOT_INDEX

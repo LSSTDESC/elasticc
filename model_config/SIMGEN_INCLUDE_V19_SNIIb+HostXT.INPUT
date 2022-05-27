@@ -1,0 +1,62 @@
+# SN IIb models from Vincenzi et al. 2019
+# 9/Nov/2021 C.Alves: SN IIb subset of V19 models + change DNDZ_ALLSCALE to 0.054 = 36% * 30% * 50% = Table 3 of Shivvers+2017 * 30% of CC SN are stripped envelope * 50% simulated using V19 models and 50% from other models  
+# 11/Nov/2021 C.Alves: Changed DNDZ_ALLSCALE to 0.109 = 36% * 30.4% =
+# 			36% of Stripped Envelope CC SN are SN IIb
+#                       * 30.4% of CC SN are Stripped Envelope
+#               Values from Table 3 of Shivvers+2017 (10.1088/1538-3873/aa54a6) 
+# 4/Feb/2022 C.Alves: Changed GENRANGE_REDSHIFT upper bound from 1.5 to 1.8 to ensure all the possibly detected supernovae are simulated.
+ 
+GENMODEL:  NON1ASED
+PATH_NON1ASED:  $PLASTICC_ROOT/model_libs_updates/NON1ASED.V19_CC+HostXT
+
+# Volumetric rate
+DNDZ:  CC_S15                   # Strolger 2015 (HST; 1509.06574)
+DNDZ_ALLSCALE:  0.109  # 11/Nov/2021 C.Alves: 36% * 30.4% ; see comment from same date 
+
+GENRANGE_REDSHIFT: 0.011  1.80
+
+# GN:  we'll just assert that since we're simulating all CC types
+# we can just follow the Strolger 2015 rate 
+# this needs the relative rates in the CC sample 
+# in Vincenzi 19 to follow the same distribution 
+# as actual CC relative rate
+# note below indicates that's happeing (Shivvers et al. 2017)
+# probably good to check this though
+GENRANGE_TREST:  -50 300
+
+# Some of the models plateau at	end of epoch range,
+# so force min mag/day slope for late-time extrapolation.
+MINSLOPE_EXTRAPMAG_LATE: 0.01
+
+# -----------------------------------------
+# TEMPLATES presented in Vincenzi et al. 2019 (arXiv:1908.05228)
+# TEMPLATES used here HAS BEEN corrected for host and MW extinction.
+#   MAGOFF and MAGSMEAR adjusted to match LF from Richardson. et al 2014.
+#   For more details see Vincenzi et al. 2019 (Table 1, Section 4.1)
+#   Richardson et al. LFs use a sample of SNe that HAS BEEN corrected 
+#   for host extinction.
+#   WGT	(relative rates) from Shivvars et al. 2017 
+#   (also reported in Vincenzi et al. 2019, Table 1)
+#
+#
+# II    --> 25 (IIP+IIL, no distinction)
+# IIn   --> 21
+# IIb   --> 23 # current file
+# Ib    --> 32
+# Ic    --> 33
+# Ic-BL --> 35
+
+
+NON1A_KEYS: 5
+                INDEX   WGT    MAGOFF   MAGSMEAR  SNTYPE
+NON1A:          748  0.009919   -0.39      0.92    23    ## IIb    SN2011ei
+NON1A:          749  0.009919    1.63      0.92    23    ## IIb    SN2011fu
+NON1A:          750  0.009919   -1.28      0.92    23    ## IIb    SN2011hs
+NON1A:          722  0.009919    0.73      0.92    23    ## IIb     SN2006T
+NON1A:          732  0.009919   -1.53      0.92    23    ## IIb    SN2008bo
+NON1A:          747  0.009919   -1.00      0.92    23    ## IIb    SN2011dh
+NON1A:          730  0.009919   -0.34      0.92    23    ## IIb    SN2008ax
+NON1A:          729  0.009919   -0.39      0.92    23    ## IIb    SN2008aq
+NON1A:          759  0.009919   -1.09      0.92    23    ## IIb    SN2013df
+NON1A:          704  0.009919   -3.77      0.92    23    ## IIb     SN1993J
+NON1A:          765  0.009919   -0.38      0.92    23    ## IIb   SN2016gkg

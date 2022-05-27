@@ -1,0 +1,33 @@
+# Alex Gagliano 10/06/21 Added RV Keys
+
+GENMODEL:  $PLASTICC_MODELS/SIMSED.KN-K17
+
+SIMSED_USE_BINARY:   1
+SIMSED_PATH_BINARY:  $PLASTICC_MODELS/SIMSED_BINARIES
+
+# Extinction from WV07 model, with half expon component
+# to approximately account for large kicks.
+WV07_REWGT_EXPAV:  0.5    
+GENRANGE_AV:  0  3    # CCM89 AV-extinctionrange
+GENPEAK_RV: 3.1 # peak prob dust parameter
+GENRANGE_RV: 2.0 4.0 # min and max limits for RV generation
+GENSIGMA_RV: 0.0 0.0 # lo & hi Gaussian sigmas
+
+# Volumetric rate (per yr per Mpc^3) base on
+# Abbott et. al. (2021)
+# https://arxiv.org/abs/2010.14533  (Sec Abstract)
+# Multiply rate by 6 so that participants cannot
+# game the metric.
+
+DNDZ: POWERLAW      320E-9  0.0    # /yr/MPc^3, no z-dependence
+GENRANGE_REDSHIFT:  0.011   0.28
+
+# ====================================
+# SIMSED GRID PARAMETERS
+# Eqal prob per SED
+
+SIMSED_GRIDONLY:  KN_INDEX
+
+# Some of the models plateau at end of epoch range,
+# so force min mag/day slope for late-time extrapolation.
+MINSLOPE_EXTRAPMAG_LATE: 0.1

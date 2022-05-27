@@ -1,0 +1,28 @@
+
+GENMODEL: $PLASTICC_ROOT/model_libs_updates/SIMSED.SNIa-91bg
+
+SIMSED_USE_BINARY:   1
+SIMSED_PATH_BINARY:  $PLASTICC_MODELS/SIMSED_BINARIES
+
+# Volumetric rate
+
+DNDZ:  POWERLAW 3.0E-6 1.5   # 3E-6/yr/Mpc^3 x (1+z)^1.5
+GENRANGE_REDSHIFT:  0.011  1.2
+
+# ==============================
+
+# var(stretch)   =  0.096^2
+# var(color)     =  0.175^2
+# reduced covar  = -0.656
+
+SIMSED_PARAM:  stretch
+GENPEAK_stretch:   0.975
+GENSIGMA_stretch:  0.096 0.096
+GENRANGE_stretch:  0.65  1.25
+
+SIMSED_PARAM:  color
+GENPEAK_color:   0.557
+GENSIGMA_color:  0.175 0.175
+GENRANGE_color:  0.0 1.0
+
+SIMSED_REDCOR(stretch,color):  -0.656

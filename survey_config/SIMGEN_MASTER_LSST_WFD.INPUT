@@ -1,0 +1,385 @@
+# R.Kessler Jan 26 2022
+#   TEST04 -> TEST05 (freeze TEST04 with 10% WFD)
+#   rename SLSN-I  to SLSN-I+host to avoid ls conflict with SLSN-I_nohost
+#
+# C.Alves, R.Kessler 21/Jan/2022
+#  - switch the simlib from minion_1016 to baseline v2.0
+# R.Kessler 17/Jan/2022
+#  + explicilty set HOSTLIB_FILE to NONE for Galactic models.
+#  - For AGN, set COSMODC2 hostlib and force radius near 0
+#
+# C.Alves 14/Jan/2022
+#   - Change PATH_SNDATA_SIM so it points to the same place in CORI and Midway
+# C.Alves 12/Jan/2022
+#   - add dwarf nova model
+# C.Alves 5/Jan/2022
+#   - uncomment Cepheid, delta-Scuti, and add SLSN for z>2.95
+#   - Hostlib only goes up to z=2.95 so SLSN above cannot have a hostlib, hence add a new model
+#   - reduce memory request from 4GB to 8GB
+# R.Kessler Dec/27/2021
+#   - add min redshift 0.023 under genopt_global since HOSTLIB only goes down to 0.02
+#   - disable host noise for AGN (to avoid abort)
+#   - update --check_abort option to generate 300 instead of 100 events
+#   - remove original Mdwar and use Mdwarf-flare with 1M generated
+#
+# WARNING: always check GENOPT_GLOBAL and check WFD vs DDF
+# keys to change on RCC: BATCH_INFO, WALLTIME, PATH_SNDATA_SIM
+
+CONFIG:
+  BATCH_INFO:  sbatch  $SBATCH_TEMPLATES/SBATCH_DEFAULT.TEMPLATE  40
+  BATCH_WALLTIME: '48:00:00'
+  BATCH_MEM:  4GB
+  PATH_SNDATA_SIM:  $SCRATCH_SIMDIR
+  RANSEED_REPEAT: 40  3773459
+  FORMAT_MASK:  48     # 32(FITS) + 16(RandomCID) + 64(compact)
+  RESET_CIDOFF: 2      # flag to generate unique CID among all models
+  CIDRAN_MIN: 1000000  # set to 0 for DDF to avoid using the same ID for different events
+  SIMGEN_INFILE_NONIa:
+  - SIMGEN_TEMPLATE_LSST.INPUT
+  NGEN_UNIT:  0.025  # 1/40 of physical rate -> RANSEED_REPEAT is to repeat 40 times so in the end we get the physical rate 
+  GENPREFIX:    ELASTICC_TEST05_LSST_WFD
+
+# use global for options that depend on WFD vs DDF
+GENOPT_GLOBAL: 
+  SIMLIB_FILE: $SNANA_LSST_ROOT/simlibs/baseline_v2.0_10yrs_WFD.simlib
+  SOLID_ANGLE: 5.694
+#  SIMLIB_FILE: $SNANA_LSST_ROOT/simlibs/PLASTICC_ORIGINAL_WFD.SIMLIB
+#  SOLID_ANGLE: 5.468 
+  SEARCHEFF_zHOST_FILE:  $SNANA_LSST_ROOT/models/searcheff/PLASTICC_ORIGINAL_zHOST_4MOST_WFD.DAT 
+  GENRANGE_REDSHIFT: 0.023 -1        # RK 12/27/2021 - update only zmin
+
+#DONE_CONFIG
+
+
+GENVERSION_LIST:
+#-----------------------------------------------------------------
+# ******************* GW counterpart & Exotic ********************
+#------------------------------------------------------------------
+# Kilonova models from Kasen 2017
+  - GENVERSION: ELASTICC_TEST05_LSST_WFD_KN_K17
+    GENOPT:
+      INPUT_FILE_INCLUDE: $ELASTICC_ROOT/model_config/SIMGEN_INCLUDE_KN-K17.INPUT
+      GENTYPE: 50
+      SEARCHEFF_SPEC_SCALE: 1.0
+      HOSTLIB_FILE: $ELASTICC_ROOT/HOSTLIB/UNMATCHED_KN_SHIFT_GHOST.HOSTLIB
+      HOSTLIB_WGTMAP_FILE: $ELASTICC_ROOT/HOSTLIB/KN_GHOST.WGTMAP
+
+#------------------------------------------------------------------------------------------------
+# Kilonova models from Bulla 2019
+  - GENVERSION: ELASTICC_TEST05_LSST_WFD_KN_B19
+    GENOPT:
+      INPUT_FILE_INCLUDE: $ELASTICC_ROOT/model_config/SIMGEN_INCLUDE_BULLA-BNS-M2-2COMP.INPUT
+      GENTYPE: 51
+      SEARCHEFF_SPEC_SCALE: 1.0  
+      HOSTLIB_FILE: $ELASTICC_ROOT/HOSTLIB/UNMATCHED_KN_SHIFT_GHOST.HOSTLIB 
+      HOSTLIB_WGTMAP_FILE: $ELASTICC_ROOT/HOSTLIB/KN_GHOST.WGTMAP
+
+#------------------------------------------------------------------------------------------------
+# Superluminous SN:  SLSN-I
+  - GENVERSION: ELASTICC_TEST05_LSST_WFD_SLSN-I+host
+    GENOPT:
+      INPUT_FILE_INCLUDE: $ELASTICC_ROOT/model_config/SIMGEN_INCLUDE_SLSN-I-MOSFIT.INPUT
+      GENTYPE: 40
+      SEARCHEFF_SPEC_SCALE: 0.008  # CAlves: SIMGEN_MASTER_LSST_WFD_HOSTLIB.INPUT does not have this ; PLAsTiCC had
+      HOSTLIB_FILE: $ELASTICC_ROOT/HOSTLIB/SNIbc_GHOST.HOSTLIB
+      HOSTLIB_WGTMAP_FILE: $ELASTICC_ROOT/HOSTLIB/SLSNI_GHOST.WGTMAP
+
+#------------------------------------------------------------------------------------------------
+# Superluminous SN high-z without hostlib:  SLSN-I_no_host
+# Hostlib only goes up to z=2.95 so SLSN above cannot have a hostlib 
+  - GENVERSION: ELASTICC_TEST05_LSST_WFD_SLSN-I_no_host
+    GENOPT:
+      INPUT_FILE_INCLUDE: $ELASTICC_ROOT/model_config/SIMGEN_INCLUDE_SLSN-I-MOSFIT.INPUT
+      GENTYPE: 40
+      SEARCHEFF_SPEC_SCALE: 0.008  # CAlves: SIMGEN_MASTER_LSST_WFD_HOSTLIB.INPUT does not have this ; PLAsTiCC had
+      HOSTLIB_FILE: NONE
+      GENRANGE_REDSHIFT: 2.95 3.95
+      CUTWIN_HOST_ZPHOT: -9999 9999
+
+#------------------------------------------------------------------------------------------------
+# Pair instability SN: PISN
+  - GENVERSION: ELASTICC_TEST05_LSST_WFD_PISN
+    GENOPT:
+      INPUT_FILE_INCLUDE: $ELASTICC_ROOT/model_config/SIMGEN_INCLUDE_PISN-MOSFIT.INPUT
+      GENTYPE: 59
+      SEARCHEFF_SPEC_FILE: ZERO  # Erase if we do not want a spectroscopically-confirmed train set
+      HOSTLIB_FILE: $ELASTICC_ROOT/HOSTLIB/UNMATCHED_COSMODC2_GHOST.HOSTLIB
+
+#------------------------------------------------------------------------------------------------
+# Intermediate Luminosity Optical Transients (ILOT)
+  - GENVERSION: ELASTICC_TEST05_LSST_WFD_ILOT
+    GENOPT:
+      INPUT_FILE_INCLUDE: $ELASTICC_ROOT/model_config/SIMGEN_INCLUDE_ILOT-MOSFIT.INPUT
+      GENTYPE: 45
+      SEARCHEFF_SPEC_FILE: ZERO
+      HOSTLIB_FILE: $ELASTICC_ROOT/HOSTLIB/UNMATCHED_COSMODC2_GHOST.HOSTLIB
+
+#------------------------------------------------------------------------------------------------
+# Ca Rich Transients (CART)
+  - GENVERSION: ELASTICC_TEST05_LSST_WFD_CART
+    GENOPT:
+      INPUT_FILE_INCLUDE: $ELASTICC_ROOT/model_config/SIMGEN_INCLUDE_CART-MOSFIT.INPUT
+      GENTYPE: 46
+      SEARCHEFF_SPEC_FILE: ZERO
+      HOSTLIB_FILE: $ELASTICC_ROOT/HOSTLIB/UNMATCHED_COSMODC2_GHOST.HOSTLIB
+
+#------------------------------------------------------------------------------------------------
+# Tidal Disruption Events
+  - GENVERSION: ELASTICC_TEST05_LSST_WFD_TDE
+    GENOPT:
+      INPUT_FILE_INCLUDE: $ELASTICC_ROOT/model_config/SIMGEN_INCLUDE_TDE-MOSFIT.INPUT
+      GENTYPE: 42
+      SEARCHEFF_SPEC_SCALE: 0.20  # CAlves: SIMGEN_MASTER_LSST_WFD_HOSTLIB.INPUT does not have this 
+      HOSTLIB_FILE: $ELASTICC_ROOT/HOSTLIB/UNMATCHED_COSMODC2_GHOST.HOSTLIB
+      HOSTLIB_WGTMAP_FILE: $ELASTICC_ROOT/HOSTLIB/TDE_GHOST.WGTMAP
+
+#------------------------------------------------------------------------------------------------
+# AGN 
+  - GENVERSION:  ELASTICC_TEST05_LSST_WFD_AGN
+    GENOPT:
+      INPUT_FILE_INCLUDE:  $ELASTICC_ROOT/model_config/SIMGEN_INCLUDE_LCLIB_AGN-LSST.INPUT
+      GENTYPE: 60
+      SEARCHEFF_SPEC_SCALE: 0.008
+      HOSTLIB_FILE:    $ELASTICC_ROOT/HOSTLIB/UNMATCHED_COSMODC2_GHOST.HOSTLIB      
+      HOSTLIB_MSKOPT:  256
+      HOSTLIB_MXINTFLUX_SNPOS: 0.05   # R near 0
+
+#------------------------------------------------------------------------------------------------
+# **********************************  Galactic transients ***************************************
+#------------------------------------------------------------------------------------------------
+# RR Lyrae
+  - GENVERSION: ELASTICC_TEST05_LSST_WFD_RRL
+    GENOPT:
+      INPUT_FILE_INCLUDE:  $ELASTICC_ROOT/model_config/SIMGEN_INCLUDE_LCLIB_RRL-LSST.INPUT
+      GENTYPE: 80
+      SEARCHEFF_SPEC_SCALE: 0.0008  
+      HOSTLIB_FILE: NONE
+      
+#------------------------------------------------------------------------------------------------
+# Mdwarf variability - non-flare version
+# 5/1/2022 PLASTICC: Decided to not run this model
+#  - GENVERSION: ELASTICC_TEST05_LSST_WFD_Mdwarf
+#    GENOPT:
+#      INPUT_FILE_INCLUDE:  $ELASTICC_ROOT/model_config/SIMGEN_INCLUDE_LCLIB_Mdwarf-LSST.INPUT
+#      GENTYPE: 81
+#      SEARCHEFF_SPEC_SCALE: 0.008  # CAlves: PLAsTiCC had
+#      HOSTLIB_FILE: NONE
+#
+#------------------------------------------------------------------------------------------------
+# M-dwarf flares - individual flares only
+  - GENVERSION: ELASTICC_TEST05_LSST_WFD_Mdwarf-flare
+    GENOPT:
+      INPUT_FILE_INCLUDE:  $ELASTICC_ROOT/model_config/SIMGEN_INCLUDE_LCLIB_Mdwarf-flare-LSST.INPUT
+      GENTYPE: 82
+      SEARCHEFF_SPEC_SCALE: 1.0 
+      HOSTLIB_FILE: NONE
+
+#------------------------------------------------------------------------------------------------
+# Eclipsing Binary
+  - GENVERSION: ELASTICC_TEST05_LSST_WFD_EB
+    GENOPT:
+      INPUT_FILE_INCLUDE:  $ELASTICC_ROOT/model_config/SIMGEN_INCLUDE_LCLIB_EB-PHOEBE.INPUT
+      GENTYPE: 83
+      SEARCHEFF_SPEC_SCALE: 0.008
+      HOSTLIB_FILE: NONE      
+
+#------------------------------------------------------------------------------------------------
+# Microlensing Binary System
+  - GENVERSION: ELASTICC_TEST05_LSST_WFD_uLens-Binary
+    GENOPT:
+      INPUT_FILE_INCLUDE: $ELASTICC_ROOT/model_config/SIMGEN_INCLUDE_LCLIB_uLens-Binary.INPUT
+      GENTYPE: 89
+      SEARCHEFF_SPEC_FILE: ZERO
+      HOSTLIB_FILE: NONE
+      
+#------------------------------------------------------------------------------------------------
+# Microlensing Single Lens - PyLIMA
+  - GENVERSION: ELASTICC_TEST05_LSST_WFD_uLens-Single_PyLIMA
+    GENOPT:
+      INPUT_FILE_INCLUDE: $ELASTICC_ROOT/model_config/SIMGEN_INCLUDE_LCLIB_uLens-Single-PyLIMA.INPUT
+      GENTYPE: 87
+      SEARCHEFF_SPEC_SCALE: 0.1
+      HOSTLIB_FILE: NONE
+      
+#------------------------------------------------------------------------------------------------
+# Microlensing Single Lens - DiSteffano
+  - GENVERSION: ELASTICC_TEST05_LSST_WFD_uLens-Single-GenLens
+    GENOPT:
+      INPUT_FILE_INCLUDE: $ELASTICC_ROOT/model_config/SIMGEN_INCLUDE_LCLIB_uLens-Single-GenLens.INPUT
+      GENTYPE: 88
+      SEARCHEFF_SPEC_SCALE: 0.1
+      HOSTLIB_FILE: NONE
+#------------------------------------------------------------------------------------------------
+# Cepheid
+  - GENVERSION: ELASTICC_TEST05_LSST_WFD_Cepheid
+    GENOPT:
+      INPUT_FILE_INCLUDE:  $ELASTICC_ROOT/model_config/SIMGEN_INCLUDE_LCLIB_Cepheid-LSST.INPUT
+      GENTYPE: 90
+      SEARCHEFF_SPEC_SCALE: 0.1
+      HOSTLIB_FILE: NONE
+#------------------------------------------------------------------------------------------------
+# delta Scuti
+  - GENVERSION: ELASTICC_TEST05_LSST_WFD_d-Sct
+    GENOPT:
+      INPUT_FILE_INCLUDE:  $ELASTICC_ROOT/model_config/SIMGEN_INCLUDE_LCLIB_d-Sct-LSST.INPUT
+      GENTYPE: 91
+      SEARCHEFF_SPEC_SCALE: 0.1
+      HOSTLIB_FILE: NONE
+#------------------------------------------------------------------------------------------------
+# Dwarf nova
+  - GENVERSION: ELASTICC_TEST05_LSST_WFD_dwarf-nova
+    GENOPT:
+      INPUT_FILE_INCLUDE:  $ELASTICC_ROOT/model_config/SIMGEN_INCLUDE_LCLIB_dwarf-nova-LSST.INPUT
+      GENTYPE: 84
+      SEARCHEFF_SPEC_SCALE: 0.
+      HOSTLIB_FILE: NONE
+#------------------------------------------------------------------------------------------------
+# ******************************** Extragalactic Transients *************************************
+#------------------------------------------------------------------------------------------------
+# MOSFIT-IIn
+  - GENVERSION: ELASTICC_TEST05_LSST_WFD_SNIIn-MOSFIT
+    GENOPT:
+      INPUT_FILE_INCLUDE: $ELASTICC_ROOT/model_config/SIMGEN_INCLUDE_SNIIn-MOSFIT.INPUT
+      GENTYPE: 35
+      SEARCHEFF_SPEC_SCALE: 0.008    
+      HOSTLIB_FILE: $ELASTICC_ROOT/HOSTLIB/SNII_GHOST.HOSTLIB
+      HOSTLIB_WGTMAP_FILE: $ELASTICC_ROOT/HOSTLIB/SNII_GHOST.WGTMAP
+
+#------------------------------------------------------------------------------------------------
+# Core collapse Type IIn templates from Vincenzi et al. 2021
+  - GENVERSION: ELASTICC_TEST05_LSST_WFD_SNIIn+HostXT_V19
+    GENOPT:
+      INPUT_FILE_INCLUDE: $ELASTICC_ROOT/model_config/SIMGEN_INCLUDE_V19_SNIIn+HostXT.INPUT
+      GENTYPE: 36
+      SEARCHEFF_SPEC_SCALE: 0.008
+      HOSTLIB_FILE: $ELASTICC_ROOT/HOSTLIB/SNII_GHOST.HOSTLIB
+      HOSTLIB_WGTMAP_FILE: $ELASTICC_ROOT/HOSTLIB/SNII_GHOST.WGTMAP
+
+#------------------------------------------------------------------------------------------------
+# Core collapse Type II using pca (5->12 on May 9 2018) for end-of-challenge model release
+  - GENVERSION: ELASTICC_TEST05_LSST_WFD_SNII-NMF
+    GENOPT:
+      INPUT_FILE_INCLUDE: $ELASTICC_ROOT/model_config/SIMGEN_INCLUDE_SNII-NMF.INPUT
+      GENTYPE: 30
+      SEARCHEFF_SPEC_SCALE: 0.008    
+      HOSTLIB_FILE: $ELASTICC_ROOT/HOSTLIB/SNII_GHOST.HOSTLIB
+      HOSTLIB_WGTMAP_FILE: $ELASTICC_ROOT/HOSTLIB/SNII_GHOST.WGTMAP
+
+#------------------------------------------------------------------------------------------------
+# legacy NON1ASED
+# Core collapse Type II from K10 templates
+  - GENVERSION: ELASTICC_TEST05_LSST_WFD_SNII-Templates
+    GENOPT:
+      INPUT_FILE_INCLUDE: $ELASTICC_ROOT/model_config/SIMGEN_INCLUDE_SNII-Templates.INPUT
+      GENTYPE: 31
+      SEARCHEFF_SPEC_SCALE: 0.008
+      HOSTLIB_FILE: $ELASTICC_ROOT/HOSTLIB/SNII_GHOST.HOSTLIB
+      HOSTLIB_WGTMAP_FILE: $ELASTICC_ROOT/HOSTLIB/SNII_GHOST.WGTMAP
+    
+#------------------------------------------------------------------------------------------------
+# Core collapse Type II (IIP, IIL) templates from Vincenzi et al. 2021
+  - GENVERSION: ELASTICC_TEST05_LSST_WFD_SNII+HostXT_V19
+    GENOPT:
+      INPUT_FILE_INCLUDE: $ELASTICC_ROOT/model_config/SIMGEN_INCLUDE_V19_SNII+HostXT.INPUT
+      GENTYPE: 32
+      SEARCHEFF_SPEC_SCALE: 0.008
+      HOSTLIB_FILE: $ELASTICC_ROOT/HOSTLIB/SNII_GHOST.HOSTLIB
+      HOSTLIB_WGTMAP_FILE: $ELASTICC_ROOT/HOSTLIB/SNII_GHOST.WGTMAP
+
+
+#------------------------------------------------------------------------------------------------
+# NON1ASED-Ibc
+# Core collapse Type Ib from K10 templates
+  - GENVERSION: ELASTICC_TEST05_LSST_WFD_SNIb-Templates
+    GENOPT:
+      INPUT_FILE_INCLUDE: $ELASTICC_ROOT/model_config/SIMGEN_INCLUDE_SNIb-Templates.INPUT
+      GENTYPE: 20
+      SEARCHEFF_SPEC_SCALE: 0.008    
+      HOSTLIB_FILE: $ELASTICC_ROOT/HOSTLIB/SNIbc_GHOST.HOSTLIB
+      HOSTLIB_WGTMAP_FILE: $ELASTICC_ROOT/HOSTLIB/SNIb_GHOST.WGTMAP 
+
+#------------------------------------------------------------------------------------------------
+# SN Ib templates from Vincenzi et al. 2021
+  - GENVERSION: ELASTICC_TEST05_LSST_WFD_SNIb+HostXT_V19
+    GENOPT:
+      INPUT_FILE_INCLUDE: $ELASTICC_ROOT/model_config/SIMGEN_INCLUDE_V19_SNIb+HostXT.INPUT
+      GENTYPE: 21
+      SEARCHEFF_SPEC_SCALE: 0.008
+      HOSTLIB_FILE: $ELASTICC_ROOT/HOSTLIB/SNIbc_GHOST.HOSTLIB
+      HOSTLIB_WGTMAP_FILE: $ELASTICC_ROOT/HOSTLIB/SNIb_GHOST.WGTMAP
+
+#------------------------------------------------------------------------------------------------
+# NON1ASED-Ibc
+# Core collapse Type Ic from K10 templates
+  - GENVERSION: ELASTICC_TEST05_LSST_WFD_SNIc-Templates
+    GENOPT:
+      INPUT_FILE_INCLUDE: $ELASTICC_ROOT/model_config/SIMGEN_INCLUDE_SNIc-Templates.INPUT
+      GENTYPE: 25
+      SEARCHEFF_SPEC_SCALE: 0.008
+      HOSTLIB_FILE: $ELASTICC_ROOT/HOSTLIB/SNIbc_GHOST.HOSTLIB
+      HOSTLIB_WGTMAP_FILE: $ELASTICC_ROOT/HOSTLIB/SNIc_GHOST.WGTMAP 
+
+#------------------------------------------------------------------------------------------------
+# SN Ic templates from Vincenzi et al. 2021
+  - GENVERSION: ELASTICC_TEST05_LSST_WFD_SNIc+HostXT_V19
+    GENOPT:
+      INPUT_FILE_INCLUDE: $ELASTICC_ROOT/model_config/SIMGEN_INCLUDE_V19_SNIc+HostXT.INPUT
+      GENTYPE: 26
+      SEARCHEFF_SPEC_SCALE: 0.008
+      HOSTLIB_FILE: $ELASTICC_ROOT/HOSTLIB/SNIbc_GHOST.HOSTLIB
+      HOSTLIB_WGTMAP_FILE: $ELASTICC_ROOT/HOSTLIB/SNIc_GHOST.WGTMAP
+
+#------------------------------------------------------------------------------------------------
+# SN IcBL templates from Vincenzi et al. 2021
+  - GENVERSION: ELASTICC_TEST05_LSST_WFD_SNIcBL+HostXT_V19
+    GENOPT:
+      INPUT_FILE_INCLUDE: $ELASTICC_ROOT/model_config/SIMGEN_INCLUDE_V19_SNIcBL+HostXT.INPUT
+      GENTYPE: 27
+      SEARCHEFF_SPEC_SCALE: 0.008
+      HOSTLIB_FILE: $ELASTICC_ROOT/HOSTLIB/SNIbc_GHOST.HOSTLIB
+      HOSTLIB_WGTMAP_FILE: $ELASTICC_ROOT/HOSTLIB/SNIcBL_GHOST.WGTMAP
+
+#------------------------------------------------------------------------------------------------
+# SN IIb templates from Vincenzi et al. 2021
+  - GENVERSION: ELASTICC_TEST05_LSST_WFD_SNIIb+HostXT_V19
+    GENOPT:
+      INPUT_FILE_INCLUDE: $ELASTICC_ROOT/model_config/SIMGEN_INCLUDE_V19_SNIIb+HostXT.INPUT
+      GENTYPE: 37
+      SEARCHEFF_SPEC_SCALE: 0.008
+      HOSTLIB_FILE: $ELASTICC_ROOT/HOSTLIB/SNII_GHOST.HOSTLIB
+      HOSTLIB_WGTMAP_FILE: $ELASTICC_ROOT/HOSTLIB/SNII_GHOST.WGTMAP
+
+
+#------------------------------------------------------------------------------------------------
+# Type Ia SN
+# reuse each SIMLIB entry SIMLIB_REPEAT times before moving to the next one; makes the code run faster; remove/change for the real simulations
+  - GENVERSION: ELASTICC_TEST05_LSST_WFD_SNIa-SALT2
+    GENOPT:
+      INPUT_FILE_INCLUDE: $ELASTICC_ROOT/model_config/SIMGEN_INCLUDE_SNIa-SALT2.INPUT
+      GENTYPE: 10
+      SEARCHEFF_SPEC_SCALE: 0.003    
+      HOSTLIB_FILE: $ELASTICC_ROOT/HOSTLIB/SNIa_GHOST.HOSTLIB
+      HOSTLIB_WGTMAP_FILE: $ELASTICC_ROOT/HOSTLIB/SNIa_GHOST.WGTMAP
+      SIMLIB_NREPEAT:  10  # reuse each SIMLIB entry 10 times 
+
+#------------------------------------------------------------------------------------------------
+# Type Ia - 1991bg subclass
+  - GENVERSION: ELASTICC_TEST05_LSST_WFD_SNIa-91bg
+    GENOPT:
+      INPUT_FILE_INCLUDE: $ELASTICC_ROOT/model_config/SIMGEN_INCLUDE_SNIa-91bg.INPUT
+      GENTYPE: 11
+      SEARCHEFF_SPEC_SCALE:  0.008
+      HOSTLIB_FILE: $ELASTICC_ROOT/HOSTLIB/UNMATCHED_COSMODC2_GHOST.HOSTLIB
+      HOSTLIB_WGTMAP_FILE: $ELASTICC_ROOT/HOSTLIB/SN91bg_GHOST.WGTMAP
+
+#------------------------------------------------------------------------------------------------
+# Type Ia - 2002cx subclass
+  - GENVERSION: ELASTICC_TEST05_LSST_WFD_SNIax
+    GENOPT:
+      INPUT_FILE_INCLUDE: $ELASTICC_ROOT/model_config/SIMGEN_INCLUDE_SNIax.INPUT
+      GENTYPE: 12
+      SEARCHEFF_SPEC_SCALE: 0.008
+      HOSTLIB_FILE: $ELASTICC_ROOT/HOSTLIB/UNMATCHED_COSMODC2_GHOST.HOSTLIB
+      HOSTLIB_WGTMAP_FILE: $ELASTICC_ROOT/HOSTLIB/SNIax_GHOST.WGTMAP
+
+#------------------------------------------------------------------------------------------------
