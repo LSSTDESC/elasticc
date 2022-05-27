@@ -1,0 +1,19 @@
+{
+	"namespace": "elasticc.v0_9",
+	"name": "diaSource",
+	"type": "record",
+	"fields": [
+		{"name": "diaSourceId", "type": "long"},
+		{"name": "ccdVisitId",  "type": "long"},
+		{"name": "diaObjectId", "type": ["null", "long"], "default": null},
+		{"name": "parentDiaSourceId", "type": ["null", "long"], "default": null},
+		{"name": "midPointTai", "type": "double"},
+		{"name": "filterName", "type": "string"},
+		{"name": "ra", "type": "double"},
+		{"name": "decl", "type": "double"},
+		{"name": "psFlux", "type": "float"},
+		{"name": "psFluxErr", "type": "float"},
+		{"name": "snr", "type": "float"},
+		{"name": "nobs", "type": ["null", "float"], "default": null}
+	]
+}

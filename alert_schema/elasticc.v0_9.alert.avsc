@@ -1,0 +1,22 @@
+{
+	"namespace": "elasticc.v0_9",
+	"type": "record",
+	"name": "alert",
+	"doc": "sample avro alert schema v4.1",
+	"fields": [
+		{"name": "alertId", "type": "long", "doc": "unique alert identifer"},
+		{"name": "diaSource", "type": "elasticc.v0_9.diaSource"},
+		{"name": "prvDiaSources", "type": ["null", {
+				"type": "array",
+				"items": "elasticc.v0_9.diaSource"}], "default": null},
+		{"name": "prvDiaForcedSources", "type": ["null", {
+				"type": "array",
+				"items": "elasticc.v0_9.diaForcedSource"}], "default": null},
+		{"name": "prvDiaNondetectionLimits", "type": ["null", {
+				"type": "array",
+				"items": "elasticc.v0_9.diaNondetectionLimit"}], "default": null},
+		{"name": "diaObject", "type": ["null", "elasticc.v0_9.diaObject"], "default": null},
+		{"name": "cutoutDifference", "type": ["null", "bytes"], "default": null},
+		{"name": "cutoutTemplate", "type": ["null", "bytes"], "default": null}
+			]
+}

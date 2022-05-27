@@ -1,0 +1,12 @@
+{
+	"namespace": "elasticc.v0_9",
+	"name": "LVKAlert",
+	"type": "record",
+	"fields": [
+		{"name": "supereventId",  "type": "string", "default": null},
+		{"name": "gpstime", "type": "float", "default": null},
+		{"name": "skymapFilename", "type": "string", "default": null},
+		{"name": "skymapHealpix", "type": {
+			 "type": "bytes", "doc": "multiorder.fits"}}
+	]
+}

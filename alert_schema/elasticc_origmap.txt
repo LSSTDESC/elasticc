@@ -1,0 +1,39 @@
+# TRUE_GENTYPE MODEL_NAME
+ 10      SNIa-SALT2
+ 11      SNIa-91bg
+ 12      SNIax
+
+ 20      SNIb-Templates
+ 21      SNIb+HostXT_V19
+ 25      SNIc-Templates
+ 26      SNIc+HostXT_V19
+ 27      SNIcBL+HostXT_V19
+
+ 30      SNII-NMF
+ 31      SNII-Templates
+ 32      SNII+HostXT_V19
+ 35      SNIIn-MOSFIT
+ 36      SNIIn+HostXT_V19
+ 37      SNIIb+HostXT_V19
+
+ 40      SLSN-I+host
+ 40      SLSN-I_no_host
+ 42      TDE
+ 45      ILOT
+ 46      CART
+
+ 50      KN_K17
+ 51      KN_B19
+ 59      PISN
+
+ 60      AGN
+
+ 80      RRL
+ 82      Mdwarf-flare
+ 83      EB
+ 84      dwarf-nova
+ 87      uLens-Single_PyLIMA
+ 88      uLens-Single-GenLens
+ 89      uLens-Binary
+ 90      Cepheid
+ 91      d-Sct
