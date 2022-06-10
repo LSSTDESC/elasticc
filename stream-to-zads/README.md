@@ -24,7 +24,7 @@ It needs to mount three external volumes:
 * `/elasticc` -- A checkout of the elasticc github archive.  Needs to
   have subdirectory `alert_schema` with the alert schema.
 * `/nightcache` -- Can be a persistent volume instead of a bind mount.
-  The code dumps a list of simulated nights its streamed to a file in,
+  The code dumps a list of simulated nights its streamed to a file in
   this directory, so that it won't redo if the code is restarted.
 
 
