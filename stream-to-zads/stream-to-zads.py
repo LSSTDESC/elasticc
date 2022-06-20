@@ -4,6 +4,7 @@ import re
 import io
 import time
 import logging
+import logging.handlers
 import datetime
 import dateutil.parser
 import pathlib
@@ -13,7 +14,7 @@ import fastavro
 import confluent_kafka
 
 _logger = logging.getLogger(__name__)
-_logout = logging.StreamHandler( sys.stderr )
+_logout = logging.handlers.TimedRotatingFileHandler( "/nightcache/stream-to-zads.log", when='d', interval=1 )
 _logger.addHandler( _logout )
 _formatter = logging.Formatter( f'[%(asctime)s - %(levelname)s] - %(message)s',
                                 datefmt='%Y-%m-%d %H:%M:%S' )
