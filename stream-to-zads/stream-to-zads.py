@@ -26,7 +26,7 @@ class AlertStreamer:
     def __init__( self, alertdirs=None, schemafile=None, kafka_broker='brahms.lbl.gov:9092',
                   kafka_topic='elasticc-test-only-1', compression_factor=10,
                   campaign_start=datetime.datetime(2022,7,6,7,0,0), nights_done_cache="/nightcache/nightsdone.lis",
-                  simnight0=60274, simnight1=61378, logger=_logger ):
+                  simnight0=60274, simnight1=61378, dry_run=False, logger=_logger ):
         self.logger = logger
         
         if alertdirs is None:
@@ -51,14 +51,19 @@ class AlertStreamer:
         self.compression_factor = compression_factor
         self.kafka_batch_size_bytes = 131072
         self.kafka_linger_ms = 50
-        
+
+        self.dry_run = dry_run
         self.t0 = campaign_start
+        # Make sure this is a timezone-aware datetime
+        if self.t0.tzinfo is None or self.t0.tzinfo.utcoffset(self.t0) is None:
+            self.t0 = self.t0.replace( tzinfo=datetime.timezone.utc )
 
         self.totaln0 = simnight0
         self.totaln1 = simnight1
 
         self.logger.info( f"AlertStreamer: t0 = {self.t0.isoformat()} ; "
-                          f"compression factor = {self.compression_factor}" )
+                          f"compression factor = {self.compression_factor} ; "
+                          f"dry run = {self.dry_run}" )
 
         self.nights_done_cache = pathlib.Path( nights_done_cache )
         if self.nights_done_cache.is_file():
@@ -71,7 +76,7 @@ class AlertStreamer:
         
 
     def stream_todays_batch( self, alert_delay=0, diffmjd_delay=0.2, diffnight_delay=5 ):
-        now = datetime.datetime.now()
+        now = datetime.datetime.now( datetime.timezone.utc )
         curday = ( now - self.t0 ).days
         n0 = self.totaln0 + curday * self.compression_factor
         n1 = n0 + self.compression_factor - 1
@@ -84,16 +89,19 @@ class AlertStreamer:
                                f"overall range {self.totaln0}..{self.totaln1}\n" )
             return False
 
-        self.logger.info( f"Streaming alerts from nights {n0} through {n1}." )
+        if self.dry_run:
+            self.logger.info( f"DRY RUN: reading and planning to stream alerts from nights {n0} through {n1}." )
+        self.logger.info( f"{'Fake-S' if self.dry_run else 'S'}treaming alerts from nights {n0} through {n1}." )
         self.logger.info( f"Will delay {alert_delay}s between alerts, {diffmjd_delay}s between "
                           f"exposures, and {diffnight_delay}s between nights." )
         
         nameparse = re.compile( 'alert_mjd([0-9]+\.[0-9]+)_obj([0-9]+)_src([0-9]+).avro.gz' )
 
-        producer = confluent_kafka.Producer( { 'bootstrap.servers': self.kafka_broker,
-                                               'batch.size': self.kafka_batch_size_bytes,
-                                               'linger.ms': self.kafka_linger_ms
-                                              } )
+        if not self.dry_run:
+            producer = confluent_kafka.Producer( { 'bootstrap.servers': self.kafka_broker,
+                                                   'batch.size': self.kafka_batch_size_bytes,
+                                                   'linger.ms': self.kafka_linger_ms
+                                                  } )
         nstreamed = 0
         bytesstreamed = 0
 
@@ -149,25 +157,29 @@ class AlertStreamer:
                 mjd = match.group(1)
                 if mjd != lastmjd:
                     if diffmjd_delay > 0:
-                        producer.flush()
+                        if not self.dry_run:
+                            producer.flush()
                         self.logger.debug( f'Starting exposure mjd {mjd}; '
-                                           f'have streamed {nightnstreamed} for night {n}; '
+                                           f'have {"fake-" if self.dry_run else " "}streamed '
+                                           f'{nightnstreamed} for night {n}; '
                                            f'sleeping {diffmjd_delay} sec' )
                         time.sleep( diffmjd_delay )
                         lastmjd = mjd
                 for alert in alerts[ alertfile ]:
                     if ( nightnstreamed % 500 ) == 0:
-                        self.logger.info( f'Have streamed {nightnstreamed} for night {n}.' )
+                        self.logger.info( f'Have {"fake-" if self.dry_run else ""}streamed '
+                                          f'{nightnstreamed} for night {n}.' )
                     alertbytes = io.BytesIO()
                     fastavro.write.schemaless_writer( alertbytes, self.schema, alert )
-                    producer.produce( self.kafka_topic, alertbytes.getvalue() )
+                    if not self.dry_run:
+                        producer.produce( self.kafka_topic, alertbytes.getvalue() )
                     nightbytesstreamed += len( alertbytes.getvalue() )
                     nightnstreamed += 1
                     if alert_delay > 0:
                         time.sleep( alert_delay )
 
             producer.flush()
-            self.logger.info( f'Streamed {nightnstreamed} total alerts for night {n} '
+            self.logger.info( f'{"Fake-s" if self.dry_run else "S"}treamed {nightnstreamed} total alerts for night {n} '
                               f'({nightbytesstreamed/1024/1024:.3f} MiB).' )
             nstreamed += nightnstreamed
             bytesstreamed += nightbytesstreamed
@@ -176,7 +188,7 @@ class AlertStreamer:
 
         # This next line is gratuitous
         producer.flush()
-        self.logger.info( f"Done with today's batch.  Streamed {nstreamed} alerts "
+        self.logger.info( f"Done with today's batch.  {'Fake-s' if self.dry_run else 'S'}treamed {nstreamed} alerts "
                           f"({bytesstreamed/1024/1024:.3f} MiB)." )
         with open( self.nights_done_cache, "w" ) as ofp:
             for n in self.nights_done:
@@ -204,9 +216,14 @@ def main():
         kafka_topic = os.getenv( "ELASTICC_ALERT_TOPIC" )
     else:
         kafka_topic = 'elasticc-test-only-1'
+
+    if os.getenv( "ELASTICC_DRY_RUN", None ) is not None:
+        dry_run = True
+    else:
+        dry_run = False
         
     streamer = AlertStreamer( compression_factor=compression_factor, campaign_start=t0,
-                              kafka_broker=kafka_broker, kafka_topic=kafka_topic )
+                              kafka_broker=kafka_broker, kafka_topic=kafka_topic, dry_run=dry_run )
     while True:
         streamer.stream_todays_batch()
         _logger.info( f'Sleeping 1 hour' )
