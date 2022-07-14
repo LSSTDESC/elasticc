@@ -137,9 +137,11 @@ class AlertStreamer:
                         else:
                             alerts[ alertfile ] = []
                         fstream = gzip.open( tar.extractfile( alertfile ), 'rb' )
-                        reader = fastavro.reader( fstream )
-                        for rawalert in reader:
-                            alerts[ alertfile ].append( rawalert )
+                        rawalert = fastavro.schemaless_reader( fstream, self.schema )
+                        alerts[ alertfile ].append( rawalert )
+                        # reader = fastavro.reader( fstream )
+                        # for rawalert in reader:
+                        #     alerts[ alertfile ].append( rawalert )
                         fstream.close()
                 self.logger.info( f"...done reading {tarpath.name}; up to {len(alertfilenames)} alert files." )
 
