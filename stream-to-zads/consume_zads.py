@@ -84,7 +84,7 @@ class ElasticcAlertConsumer:
             
 def main():
     server = 'public.alerts.ztf.uw.edu:9092'
-    topic = 'elasticc-test-only-1'
+    topic = 'elasticc-test-early-july'
     # server = 'brahms.lbl.gov:9092'
     # topic = 'elasticc-test-only-5'
     

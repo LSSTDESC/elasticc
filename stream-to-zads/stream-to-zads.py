@@ -172,15 +172,14 @@ class AlertStreamer:
             nstreamed += nightnstreamed
             bytesstreamed += nightbytesstreamed
             self.nights_done.append( n )
+            with open( self.nights_done_cache, "w" ) as ofp:
+                ofp.write( f"{n}\n" )
             time.sleep( diffnight_delay )
 
         # This next line is gratuitous
         producer.flush()
         self.logger.info( f"Done with today's batch.  Streamed {nstreamed} alerts "
                           f"({bytesstreamed/1024/1024:.3f} MiB)." )
-        with open( self.nights_done_cache, "w" ) as ofp:
-            for n in self.nights_done:
-                ofp.write( f"{n}\n" )
 
 # ======================================================================
 
