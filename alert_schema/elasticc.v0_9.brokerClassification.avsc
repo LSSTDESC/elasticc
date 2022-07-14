@@ -7,11 +7,11 @@
     {"name": "alertId", "type": "long", "doc": "unique alert identifer"},
     {"name": "diaSourceId", "type": "long", "doc": "id of source that triggered this classification"},
     {"name": "elasticcPublishTimestamp",
-        "type": {"type": "long", "logicalType": "timestamp-micros"},
+        "type": {"type": "long", "logicalType": "timestamp-millis"},
         "doc": "timestamp from originating ELAsTiCC alert"
     },
     {"name": "brokerIngestTimestamp",
-        "type": ["null", {"type": "long", "logicalType": "timestamp-micros"}],
+        "type": ["null", {"type": "long", "logicalType": "timestamp-millis"}],
         "doc": "timestamp of broker ingestion of ELAsTiCC alert"
     },
     {"name": "brokerName", "type": "string", "doc": "Name of broker (never changes)" },
@@ -30,7 +30,7 @@
                "type": "string",
                "doc": "Any classifier parameter information worth noting for this classification"
             },
-            {"name": "classId", "type": "int", "doc": "See <filename> for specification" },
+            {"name": "classId", "type": "int", "doc": "See https://github.com/LSSTDESC/elasticc/tree/main/taxonomy/taxonomy.ipynb for specification" },
             {"name": "probability",  "type": "float", "doc": "0-1" }
           ]
         }

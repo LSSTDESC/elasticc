@@ -1,3 +1,7 @@
+# NOTE -- these are the types used to identify the models that were
+# created for the simulation.  They are *not* the class IDs to report.
+# Those can be found in ../taxonomy
+
 # TRUE_GENTYPE MODEL_NAME
  10      SNIa-SALT2
  11      SNIa-91bg
