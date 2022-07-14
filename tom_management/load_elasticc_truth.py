@@ -6,18 +6,13 @@ from truthloader import TruthLoader
 class SourceTruthLoader(TruthLoader):
     def __init__( self, *args, **kwargs ):
         urlend = 'elasticc/addtruth'
-        converters = { '# SourceID': int,
+        converters = { 'SourceID': int,
                        'SNID': int,
                        'MJD': float,
                        'DETECT': int,
                        'TRUE_GENTYPE': int,
                        'TRUE_GENMAG': float }
-        renames = { "# SourceID": "diaSourceId",
-                    "SNID": "diaObjectId",
-                    "MJD": "mjd",
-                    "DETECT": "detect",
-                    "TRUE_GENTYPE": "true_gentype",
-                    "TRUE_GENMAG": "true_genmag" }
+        renames = {}
         super().__init__( *args, urlend=urlend, converters=converters, renames=renames, **kwargs )
 
 def main():

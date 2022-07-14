@@ -7,9 +7,11 @@ class ObjectTruthLoader(TruthLoader):
     def __init__( self, *args, **kwargs ):
         urlend = 'elasticc/addobjecttruth'
         converters = { 'SNID': int,
+                       'CID': int,
                        'LIBID': int,
                        'SIM_SEARCHEFF_MASK': int,
                        'GENTYPE': int,
+                       'NON1A_INDEX': int,
                        'SIM_TEMPLATE_INDEX': int,
                        'ZCMB': float,
                        'ZHELIO': float,
@@ -41,10 +43,12 @@ class ObjectTruthLoader(TruthLoader):
                        'SNRMAX3': float,
                        'NOBS': int,
                        'NOBS_SATURATE': int }
-        renames = { 'SNID': "diaObjectId",
+        renames = { 'SNID': "diaObject_id",
+                    'CID': "diaObject_id",
                     'LIBID': 'libid',
                     'SIM_SEARCHEFF_MASK': 'sim_searcheff_mask',
                     'GENTYPE': 'gentype',
+                    "NON1A_INDEX": 'sim_template_index',
                     'SIM_TEMPLATE_INDEX': 'sim_template_index',
                     'ZCMB': 'zcmb',
                     'ZHELIO': 'zhelio',
@@ -76,7 +80,7 @@ class ObjectTruthLoader(TruthLoader):
                     'SNRMAX3': 'snrmax3',
                     'NOBS': 'nobs',
                     'NOBS_SATURATE': 'nobs_saturate' }
-        super().__init__( *args, urlend=urlend, converters=converters, renames=renames, **kwargs )
+        super().__init__( *args, urlend=urlend, converters=converters, renames=renames, sep='\s+', **kwargs )
 
 def main():
     logger = logging.getLogger( "main" )

@@ -1,5 +1,6 @@
 import sys
 import io
+import time
 import argparse
 import pathlib
 import logging
@@ -16,51 +17,64 @@ class AlertLoader(TomConnection):
         super().__init__( *args, **kwargs )
         self.dryrun = dryrun
         self.alertcache = []
-        self.tot_alerts_loaded = 0
+        self.tot_alerts_loaded = 0 
+        self.tot_missing = 0
         self.tot_objs_loaded = 0
         self.tot_sources_loaded = 0
+        self.tot_forced_loaded = 0
         self.alert_cache_size = 1000
-    
+
+        self.schema = fastavro.schema.load_schema( "../alert_schema/elasticc.v0_9.alert.avsc" )
+        
     def flush_alert_cache( self ):
         if len( self.alertcache ) > 0:
             self.logger.debug( f"Posting {sys.getsizeof(json.dumps(self.alertcache))/1024/1024:.2f} MiB "
-                               f"for {len(self.alertcache)} alerts\n" )
+                               f"for {len(self.alertcache)} alerts" )
             if self.dryrun:
                 self.logger.warning( f'Not actually posting, this is a dry run.' )
             else:
-                resp = self.rqs.post( f'{self.urlbase}/elasticc/addelasticcalert', json=self.alertcache )
-                if resp.status_code != 200:
-                    self.logger.error( f"ERROR : got status code {resp.status_code}\n" )
-                else:
-                    rjson = json.loads( resp.text )
-                    if rjson['status'] != 'ok':
-                        with io.StringIO() as strstr:
-                            strstr.write( f"ERROR: got status {rjson['status']}\n" )
-                            for key, val in rjson.items():
-                                if key != 'status':
-                                    strstr.write( f"  {key} : {val}\n" )
-                            self.logger.error( strstr.getvalue() )
+                # Keep resending until we get a good result.  The code on the server
+                #   side should be smart enough to not add alerts more than once.
+                ok = False
+                while not ok:
+                    resp = self.rqs.post( f'{self.urlbase}/elasticc/addelasticcalert', json=self.alertcache )
+                    if resp.status_code != 200:
+                        self.logger.error( f"ERROR : got status code {resp.status_code}; retrying after 1s..." )
+                        time.sleep(1)
                     else:
-                        self.tot_objs_loaded += len(rjson["message"]["objects"])
-                        self.tot_sources_loaded += len(rjson["message"]["sources"])
-                        self.tot_alerts_loaded += len(rjson["message"]["alerts"])
-                        self.logger.info( f'Loaded {len(rjson["message"]["alerts"])} alerts '
-                                          f'(tot {self.tot_alerts_loaded}), '
-                                          f'{len(rjson["message"]["objects"])} objects '
-                                          f'(tot {self.tot_objs_loaded}), '
-                                          f'{len(rjson["message"]["sources"])} sources '
-                                          f'(tot {self.tot_sources_loaded})\n' )
+                        ok = True
+                rjson = json.loads( resp.text )
+                if rjson['status'] != 'ok':
+                    with io.StringIO() as strstr:
+                        strstr.write( f"ERROR: got status {rjson['status']}\n" )
+                        for key, val in rjson.items():
+                            if key != 'status':
+                                strstr.write( f"  {key} : {val}\n" )
+                        self.logger.error( strstr.getvalue() )
+                else:
+                    self.tot_objs_loaded += len(rjson["message"]["objects"])
+                    self.tot_sources_loaded += len(rjson["message"]["sources"])
+                    self.tot_alerts_loaded += len(rjson["message"]["alerts"])
+                    self.tot_forced_loaded += len(rjson["message"]["forcedsources"])
+                    self.logger.info( f'{len(rjson["message"]["alerts"])} alerts '
+                                      f'({self.tot_alerts_loaded}), '
+                                      f'{len(rjson["message"]["objects"])} objects '
+                                      f'({self.tot_objs_loaded}), '
+                                      f'{len(rjson["message"]["sources"])} sources '
+                                      f'({self.tot_sources_loaded}), '
+                                      f'{len(rjson["message"]["forcedsources"])} forced '
+                                      f'({self.tot_forced_loaded})' )
             self.alertcache = []
 
-    def read_alerts( self, fstream ):
-        reader = fastavro.reader( fstream )
-        alerts = []
+    # def read_alerts( self, fstream ):
+    #     reader = fastavro.schemaless_reader( fstream )
+    #     alerts = []
         
-        for rawalert in reader:
-            # I *think* that the schema in the database match the avro schema directly,
-            # and as such the webap is expecting all the fields in the alert.
-            alerts.append( rawalert )
-        return alerts
+    #     for rawalert in reader:
+    #         # I *think* that the schema in the database match the avro schema directly,
+    #         # and as such the webap is expecting all the fields in the alert.
+    #         alerts.append( rawalert )
+    #     return alerts
             
     def load_directory( self, direc, top=True ):
         direc = pathlib.Path( direc )
@@ -79,17 +93,16 @@ class AlertLoader(TomConnection):
                     fstream = open( alertfile, "rb")
                 elif ( ( len(alertfile.name) > 7 ) and ( alertfile.name[-7:] == ".tar.gz" ) or
                        ( len(alertfile.name) > 4 ) and ( alertfile.name[-4:] == ".tar" ) ):
-                    self.logger.debug( f'Loading tar file {alertfile}\n' )
+                    self.logger.debug( f'Loading tar file {alertfile}' )
                     self.load_tarfile( alertfile )
                     continue
                 else:
-                    self.logger.warning( f'Skipping unrecognized file {alertfile.name}\n' )
+                    self.logger.warning( f'Skipping unrecognized file {alertfile.name}' )
                     continue
 
-                alerts = self.read_alerts( fstream )
+                alert = fastavro.schemaless_reader( fstream, self.schema )
                 fstream.close()
-                for alert in alerts:
-                    self.alertcache.append( alert )
+                self.alertcache.append( alert )
                 if len(self.alertcache) >= self.alert_cache_size:
                     self.flush_alert_cache( )
         if top:
@@ -106,10 +119,9 @@ class AlertLoader(TomConnection):
                 else:
                     continue
 
-                alerts = self.read_alerts( fstream )
+                alert = fastavro.schemaless_reader( fstream, self.schema )
                 fstream.close()
-                for alert in alerts:
-                    self.alertcache.append( alert )
+                self.alertcache.append( alert )
                 if len(self.alertcache) >= self.alert_cache_size:
                     self.flush_alert_cache( )
         self.flush_alert_cache()
