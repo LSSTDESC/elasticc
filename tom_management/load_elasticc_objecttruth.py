@@ -80,7 +80,7 @@ class ObjectTruthLoader(TruthLoader):
                     'SNRMAX3': 'snrmax3',
                     'NOBS': 'nobs',
                     'NOBS_SATURATE': 'nobs_saturate' }
-        super().__init__( *args, urlend=urlend, converters=converters, renames=renames, sep='\s+', **kwargs )
+        super().__init__( *args, urlend=urlend, converters=converters, renames=renames, sep=',', **kwargs )
 
 def main():
     logger = logging.getLogger( "main" )
