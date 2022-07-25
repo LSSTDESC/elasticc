@@ -84,15 +84,15 @@ class ElasticcAlertConsumer:
             
 def main():
     server = 'public.alerts.ztf.uw.edu:9092'
-    topic = 'elasticc-test-mid-july'
+    topic = 'elasticc-test-early-july'
     # server = 'brahms.lbl.gov:9092'
     # topic = 'elasticc-test-mid-july'
     
     eac = ElasticcAlertConsumer( polltime=datetime.timedelta(seconds=30), reset=True, logger=_logger,
                                  server=server, topic=topic )
     _logger.info( "Starting poll loop" )
-    eac()
     import pdb; pdb.set_trace()
+    eac()
 
 # ======================================================================
 

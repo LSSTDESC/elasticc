@@ -186,7 +186,7 @@ class AlertStreamer:
             nstreamed += nightnstreamed
             bytesstreamed += nightbytesstreamed
             self.nights_done.append( n )
-            with open( self.nights_done_cache, "w" ) as ofp:
+            with open( self.nights_done_cache, "wa" ) as ofp:
                 ofp.write( f"{n}\n" )
             time.sleep( diffnight_delay )
 
