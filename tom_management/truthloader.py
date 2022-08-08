@@ -62,8 +62,8 @@ class TruthLoader(TomConnection):
             else:
                 if 'missing' in rjson:
                     if len( rjson['missing'] ) > 0:
-                        self.logger.warniing( f'Server told us the following was missing: '
-                                              f'{" ".join( [ str(i) for i in rjson["missing"] ] )}' )
+                        self.logger.warning( f'Server told us the following was missing: '
+                                             f'{" ".join( [ str(i) for i in rjson["missing"] ] )}' )
                         self.tot_missing += len( rjson['missing'] )
                 self.tot_n_loaded += len( rjson["message"] )
                 self.logger.info( f'Loaded {len(rjson["message"])} truth values, '
