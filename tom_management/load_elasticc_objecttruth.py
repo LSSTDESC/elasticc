@@ -43,8 +43,8 @@ class ObjectTruthLoader(TruthLoader):
                        'SNRMAX3': float,
                        'NOBS': int,
                        'NOBS_SATURATE': int }
-        renames = { 'SNID': "diaObject_id",
-                    'CID': "diaObject_id",
+        renames = { 'SNID': "diaObjectId",
+                    'CID': "diaObjectId",
                     'LIBID': 'libid',
                     'SIM_SEARCHEFF_MASK': 'sim_searcheff_mask',
                     'GENTYPE': 'gentype',
