@@ -34,9 +34,9 @@ class AlertStreamer:
         self.logger = logger
         
         if alertdirs is None:
-            self.alertdirs = [ '/alerts/ELASTICC_ALERTS_TEST_EXTRAGALACTIC-SNIa/ALERTS',
-                               '/alerts/ELASTICC_ALERTS_TEST_EXTRAGALACTIC-nonIa/ALERTS',
-                               '/alerts/ELASTICC_ALERTS_TEST_GALACTIC/ALERTS' ]
+            self.alertdirs = [ '/alerts/ELASTICC_ALERTS_SUBSET_EXTRAGALACTIC-SNIa/ALERTS',
+                               '/alerts/ELASTICC_ALERTS_SUBSET_EXTRAGALACTIC-nonIa/ALERTS',
+                               '/alerts/ELASTICC_ALERTS_SUBSET_GALACTIC/ALERTS' ]
         else:
             self.alertdirs = alertdirs
 
@@ -85,6 +85,7 @@ class AlertStreamer:
             self.tom_passwd = ifp.readline().strip()
 
     def log_into_tom( self ):
+        self.logger.info( f"Logging into the TOM at {self.tom_url}" )
         rqs = requests.session()
         rqs.get( f'{self.tom_url}/accounts/login/' )
         res = rqs.post( f'{self.tom_url}/accounts/login/',
@@ -96,11 +97,15 @@ class AlertStreamer:
         if 'Please enter a correct' in res.text:
             raise RuntimeError( "Failed to log in.  I think.  Put in a debug break and look at res.text" )
         rqs.headers.update( { 'X-CSRFToken': rqs.cookies['csrftoken'] } )
+        self.logger.info( f"TOM login successful (as far as I can tell)" )
         return rqs
 
     def notify_tom( self, rqs, ids ):
         if len(ids) == 0:
             return
+
+        self.logger.debug( f"Notifying TOM of {len(ids)} alerts streamed." )
+        self.logger.debug( f"type(rqs)={type(rqs)}, rqs={rqs}" )
         
         outercountdown = 5
         while outercountdown >= 0:
@@ -110,7 +115,6 @@ class AlertStreamer:
                     try:
                         res = rqs.post( f'{self.tom_url}/elasticc/markalertsent', json=ids )
                         if res.status_code != 200:
-                            self.logger.error( f"Got status_code={res.status_code} from TOM" )
                             raise RuntimeError( "Got status_code={res.status_code} from TOM" )
                         data = json.loads( res.text )
                         if ( not 'status' in data ) or ( data['status'] != 'ok' ):
@@ -122,11 +126,11 @@ class AlertStreamer:
                                 strio.write( f"   traceback:\n{data['traceback']}\n" )
                             else:
                                 strio.write( f"Unexpected return from TOM: {data}" )
-                            self.logger.error( strio.getvalue() )
                             raise RuntimeError( strio.getvalue() )
                         countdown = -1
                     except Exception as e:
-                        if countdown >= 0:
+                        self.logger.error( f"Error notifying TOM: {str(e)}" )
+                        if countdown <= 0:
                             self.logger.error( "Failed too many times, bailing." )
                             raise e
                         self.logger.error( "Retrying in 1 second..." )
@@ -254,22 +258,24 @@ class AlertStreamer:
                     if alert_delay > 0:
                         time.sleep( alert_delay )
 
-            producer.flush()
-            rqs = self.notify_tom( rqs, idsproduced )
-            idsproduced = []
+            if not self.dry_run:
+                producer.flush()
+                rqs = self.notify_tom( rqs, idsproduced )
+                idsproduced = []
             self.logger.info( f'{"Fake-s" if self.dry_run else "S"}treamed {nightnstreamed} total alerts for night {n} '
                               f'({nightbytesstreamed/1024/1024:.3f} MiB).' )
             nstreamed += nightnstreamed
             bytesstreamed += nightbytesstreamed
             self.nights_done.append( n )
-            with open( self.nights_done_cache, "wa" ) as ofp:
+            with open( self.nights_done_cache, "a" ) as ofp:
                 ofp.write( f"{n}\n" )
             time.sleep( diffnight_delay )
 
-        # This next line is gratuitous
-        producer.flush()
-        rqs = self.notify_tom( rqs, idsproduced )
-        idsproduced = []
+        # This next flush is gratuitous, I think
+        if not self.dry_run:
+            producer.flush()
+            rqs = self.notify_tom( rqs, idsproduced )
+            idsproduced = []
         self.logger.info( f"Done with today's batch.  {'Fake-s' if self.dry_run else 'S'}treamed {nstreamed} alerts "
                           f"({bytesstreamed/1024/1024:.3f} MiB)." )
 
@@ -300,9 +306,15 @@ def main():
         dry_run = True
     else:
         dry_run = False
+
+    if os.getenv( "TOM_URL" ) is not None:
+        tom_url = os.getenv( "TOM_URL" )
+    else:
+        tom_url = "https://desc-tom.lbl.gov"
         
     streamer = AlertStreamer( compression_factor=compression_factor, campaign_start=t0,
-                              kafka_broker=kafka_broker, kafka_topic=kafka_topic, dry_run=dry_run )
+                              kafka_broker=kafka_broker, kafka_topic=kafka_topic, tom_url=tom_url,
+                              dry_run=dry_run )
     while True:
         streamer.stream_todays_batch()
         _logger.info( f'Sleeping 1 hour' )
