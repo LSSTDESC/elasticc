@@ -179,6 +179,7 @@ class AlertStreamer:
             
         nstreamed = 0
         bytesstreamed = 0
+        idsproduced = []
 
         # Do it one "night" at a time
         for n in range( n0, n1+1 ):
