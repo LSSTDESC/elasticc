@@ -111,6 +111,7 @@ class AlertStreamer:
         while outercountdown >= 0:
             countdown = 5
             try:
+                rqs = self.log_into_tom()
                 while countdown >= 0:
                     try:
                         res = rqs.post( f'{self.tom_url}/elasticc/markalertsent', json=ids )
