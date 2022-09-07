@@ -148,7 +148,7 @@ class AlertStreamer:
                 outercountdown -= 1
         return rqs
     
-    def stream_todays_batch( self, alert_delay=0, diffmjd_delay=0.2, diffnight_delay=5 ):
+    def stream_todays_batch( self, alert_delay=0, diffmjd_delay=0.05, diffnight_delay=5 ):
         now = datetime.datetime.now( datetime.timezone.utc )
         curday = ( now - self.t0 ).days
         n0 = self.totaln0 + curday * self.compression_factor
@@ -235,17 +235,17 @@ class AlertStreamer:
                     continue
                 mjd = match.group(1)
                 if mjd != lastmjd:
+                    if not self.dry_run:
+                        producer.flush()
+                        rqs = self.notify_tom( rqs, idsproduced )
+                        idsproduced = []
+                    self.logger.debug( f'Starting exposure mjd {mjd}; '
+                                       f'have {"fake-" if self.dry_run else " "}streamed '
+                                       f'{nightnstreamed} for night {n}; '
+                                       f'sleeping {diffmjd_delay} sec' )
                     if diffmjd_delay > 0:
-                        if not self.dry_run:
-                            producer.flush()
-                            rqs = self.notify_tom( rqs, idsproduced )
-                            idsproduced = []
-                        self.logger.debug( f'Starting exposure mjd {mjd}; '
-                                           f'have {"fake-" if self.dry_run else " "}streamed '
-                                           f'{nightnstreamed} for night {n}; '
-                                           f'sleeping {diffmjd_delay} sec' )
                         time.sleep( diffmjd_delay )
-                        lastmjd = mjd
+                    lastmjd = mjd
                 for alert in alerts[ alertfile ]:
                     if ( nightnstreamed % 500 ) == 0:
                         self.logger.info( f'Have {"fake-" if self.dry_run else ""}streamed '
