@@ -85,7 +85,7 @@ class AlertStreamer:
             self.tom_passwd = ifp.readline().strip()
 
     def log_into_tom( self ):
-        self.logger.info( f"Logging into the TOM at {self.tom_url}" )
+        self.logger.debug( f"Logging into the TOM at {self.tom_url}" )
         rqs = requests.session()
         rqs.get( f'{self.tom_url}/accounts/login/' )
         res = rqs.post( f'{self.tom_url}/accounts/login/',
@@ -97,7 +97,7 @@ class AlertStreamer:
         if 'Please enter a correct' in res.text:
             raise RuntimeError( "Failed to log in.  I think.  Put in a debug break and look at res.text" )
         rqs.headers.update( { 'X-CSRFToken': rqs.cookies['csrftoken'] } )
-        self.logger.info( f"TOM login successful (as far as I can tell)" )
+        self.logger.debug( f"TOM login successful (as far as I can tell)" )
         return rqs
 
     def notify_tom( self, rqs, ids ):
