@@ -52,17 +52,17 @@ class AlertLoader(TomConnection):
                                 strstr.write( f"  {key} : {val}\n" )
                         self.logger.error( strstr.getvalue() )
                 else:
-                    self.tot_objs_loaded += len(rjson["message"]["objects"])
-                    self.tot_sources_loaded += len(rjson["message"]["sources"])
-                    self.tot_alerts_loaded += len(rjson["message"]["alerts"])
-                    self.tot_forced_loaded += len(rjson["message"]["forcedsources"])
-                    self.logger.info( f'{len(rjson["message"]["alerts"])} alerts '
+                    self.tot_objs_loaded += rjson["message"]["objects"]
+                    self.tot_sources_loaded += rjson["message"]["sources"]
+                    self.tot_alerts_loaded += rjson["message"]["alerts"]
+                    self.tot_forced_loaded += rjson["message"]["forcedsources"]
+                    self.logger.info( f'{rjson["message"]["alerts"]} alerts '
                                       f'({self.tot_alerts_loaded}), '
-                                      f'{len(rjson["message"]["objects"])} objects '
+                                      f'{rjson["message"]["objects"]} objects '
                                       f'({self.tot_objs_loaded}), '
-                                      f'{len(rjson["message"]["sources"])} sources '
+                                      f'{rjson["message"]["sources"]} sources '
                                       f'({self.tot_sources_loaded}), '
-                                      f'{len(rjson["message"]["forcedsources"])} forced '
+                                      f'{rjson["message"]["forcedsources"]} forced '
                                       f'({self.tot_forced_loaded})' )
             self.alertcache = []
 
