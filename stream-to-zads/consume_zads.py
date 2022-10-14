@@ -23,7 +23,7 @@ def _do_nothing( *args, **kwargs ):
     pass
 
 class ElasticcAlertConsumer:
-    def __init__( self, server="brahms.lbl.gov:9092", groupid="rob_elasticc-test-1",
+    def __init__( self, server="brahms.lbl.gov:9092", groupid="rob_elasticc-test-2",
                   topic="elasticc-test-only-1", schema=None, timeout=5, nmsgs=100,
                   polltime=datetime.timedelta(hours=1), reset=False, logger=_logger ):
         self.logger = logger
@@ -91,6 +91,7 @@ def main():
     eac = ElasticcAlertConsumer( polltime=datetime.timedelta(seconds=30), reset=True, logger=_logger,
                                  server=server, topic=topic )
     _logger.info( "Starting poll loop" )
+    # import pdb; pdb.set_trace()
     eac()
 
 # ======================================================================

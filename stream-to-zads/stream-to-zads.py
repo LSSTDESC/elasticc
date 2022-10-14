@@ -65,9 +65,9 @@ class AlertStreamer:
         self.totaln0 = simnight0
         self.totaln1 = simnight1
 
-        self.logger.info( f"AlertStreamer: t0 = {self.t0.isoformat()} ; "
-                          f"compression factor = {self.compression_factor} ; "
-                          f"dry run = {self.dry_run}" )
+        self.logger.info( f"AlertStreamer: t0 = {self.t0.isoformat()} " )
+        self.logger.info( f"AlertStreamer: simnight0={self.totaln0}, simnight1={self.totaln1}" )
+        self.logger.info( f"AlertStreamer: compression factor = {self.compression_factor} ; dry run = {self.dry_run}" )
 
         self.nights_done_cache = pathlib.Path( nights_done_cache )
         if self.nights_done_cache.is_file():
@@ -294,27 +294,19 @@ def main():
     else:
         t0 = datetime.datetime( 2022, 7, 6, 7, 0 )
 
-    if os.getenv( "ELASTICC_ALERT_SERVER" ) is not None:
-        kafka_broker = os.getenv( "ELASTICC_ALERT_SERVER" )
-    else:
-        kafka_broker = 'brahms.lbl.gov:9092'
-
-    if os.getenv( "ELASTICC_ALERT_TOPIC" ) is not None:
-        kafka_topic = os.getenv( "ELASTICC_ALERT_TOPIC" )
-    else:
-        kafka_topic = 'elasticc-test-only-1'
-
     if os.getenv( "ELASTICC_DRY_RUN", None ) is not None:
         dry_run = True
     else:
         dry_run = False
 
-    if os.getenv( "TOM_URL" ) is not None:
-        tom_url = os.getenv( "TOM_URL" )
-    else:
-        tom_url = "https://desc-tom.lbl.gov"
-        
+    kafka_broker = os.getenv( "ELASTICC_ALERT_SERVER", default="brahms.lbl.gov:9092" )
+    kafka_topic = os.getenv( "ELASTICC_ALERT_TOPIC", default="elasticc-test-only-1" )
+    tom_url = os.getenv( "TOM_URL", default="https://desc-tom.lbl.gov" )
+    simnight0 = int( os.getenv( "ELASTICC_SIMNIGHT_START", default=60274 ) )
+    simnight1 = int( os.getenv( "ELASTICC_SIMNIGHT_END", default=62378 ) )
+                     
     streamer = AlertStreamer( compression_factor=compression_factor, campaign_start=t0,
+                              simnight0=simnight0, simnight1=simnight1,
                               kafka_broker=kafka_broker, kafka_topic=kafka_topic, tom_url=tom_url,
                               dry_run=dry_run )
     while True:

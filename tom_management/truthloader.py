@@ -1,5 +1,6 @@
 import sys
 import pandas
+import numpy
 import json
 import gzip
 import logging
@@ -32,7 +33,11 @@ class TruthLoader(TomConnection):
             df.rename( self.renames, axis=1, inplace=True )
         # import pdb; pdb.set_trace()
         for i, row in df.iterrows():
-            self.cache.append( dict(row) )
+            # Dealing with Pandas NaN and JSON is painf8ul
+            d = dict(row)
+            for key, val in d.items():
+                if numpy.isnan( val ): d[key] = None
+            self.cache.append( d )
             if len( self.cache ) >= self.cache_size:
                 self.flush_cache()
         self.flush_cache()
