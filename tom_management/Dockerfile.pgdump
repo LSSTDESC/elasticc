@@ -1,0 +1,14 @@
+FROM rknop/devuan-chimaera-rknop
+MAINTAINER Rob Knop <raknop@lbl.gov>
+
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get upgrade -y \
+    && apt-get install -y postgresql-client-13 \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN mkdir /home/pgdump
+ENV HOME /home/pgdump
+ADD run_pgdump.sh /home/pgdump/run_pgdump.sh
+
+ENTRYPOINT [ "/bin/bash", "/home/pgdump/run_pgdump.sh" ]
