@@ -116,7 +116,7 @@ class AlertStreamer:
                     try:
                         res = rqs.post( f'{self.tom_url}/elasticc/markalertsent', json=ids )
                         if res.status_code != 200:
-                            raise RuntimeError( "Got status_code={res.status_code} from TOM" )
+                            raise RuntimeError( f"Got status_code={res.status_code} from TOM" )
                         data = json.loads( res.text )
                         if ( not 'status' in data ) or ( data['status'] != 'ok' ):
                             strio = io.StringIO( "" )
