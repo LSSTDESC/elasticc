@@ -28,9 +28,16 @@
 
  50      KN_K17
  51      KN_B19
- 59      PISN
+ 57      PISN-STELLA-HECORE
+ 58      PISN-STELLA-HYDROGENIC
+ 59      PISN-MOSFIT
 
  60      AGN
+
+ 71      SL-SNIa
+ 72      SL-SNII+HostXT_V19
+ 73      SL-SNIb+HostXT_V19
+ 74      SL-SNIc+HostXT_V19
 
  80      RRL
  82      Mdwarf-flare
