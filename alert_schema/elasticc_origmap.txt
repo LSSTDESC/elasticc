@@ -48,3 +48,4 @@
  89      uLens-Binary
  90      Cepheid
  91      d-Sct
+ 98      Techno-sig
