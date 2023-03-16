@@ -172,8 +172,19 @@ class MsgConsumer(object):
                 
     def default_handle_message_batch( self, msgs ):
         self.logger.info( f'Handling {len(msgs)} messages' )
+        timestamp_name = { confluent_kafka.TIMESTAMP_NOT_AVAILABLE: "TIMESTAMP_NOT_AVAILABLE",
+                           confluent_kafka.TIMESTAMP_CREATE_TIME: "TIMESTAMP_CREATE_TIME",
+                           confluent_kafka.TIMESTAMP_LOG_APPEND_TIME: "TIMESTAMP_LOG_APPEND_TIME" }
         for msg in msgs:
-            ofp = io.StringIO( f"{msg.topic()} {msg.partition()} {msg.offset()} {msg.key()}\n" )
+            ofp = io.StringIO()
+            ofp.write( f"{msg.topic()} {msg.partition()} {msg.offset()} {msg.key()}\n" )
+            if msg.headers() is not None:
+                ofp.write( "HEADERS:\n" )
+                for key, value in msg.headers():
+                    ofp.write( f"  {key} : {value}\n" )
+            timestamp = msg.timestamp()
+            ofp.write( f"Timestamp: {timestamp[1]} (type {timestamp_name[timestamp[0]]})\n" )
+            ofp.write( "MESSAGE PAYLOAD:\n" )
             alert = fastavro.schemaless_reader( io.BytesIO(msg.value()), self.schema )
             # # They are datetime -- Convert to numbers
             # alert['elasticcPublishTimestamp'] = alert['elasticcPublishTimestamp'].timestamp()

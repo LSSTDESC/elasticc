@@ -83,10 +83,10 @@ class ElasticcAlertConsumer:
         self.consumer.close()
             
 def main():
-    server = 'public.alerts.ztf.uw.edu:9092'
-    topic = 'elasticc-2022fall'
-    # server = 'brahms.lbl.gov:9092'
-    # topic = 'elasticc-test-mid-july'
+    # server = 'public.alerts.ztf.uw.edu:9092'
+    # topic = 'elasticc-2022fall'
+    server = 'brahms.lbl.gov:9092'
+    topic = 'elasticc-test-omg-test'
     
     eac = ElasticcAlertConsumer( polltime=datetime.timedelta(seconds=30), reset=True, logger=_logger,
                                  server=server, topic=topic )
