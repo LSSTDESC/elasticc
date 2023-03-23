@@ -107,7 +107,10 @@ class MsgConsumer(object):
             
     def print_topics( self ):
         cluster_meta = self.consumer.list_topics()
-        self.logger.info( f"\nTopics: {', '.join([ n for n in cluster_meta.topics])}" )
+        topics = [ n for n in cluster_meta.topics ]
+        topics.sort()
+        topicstxt = '\n  '.join(topics)
+        self.logger.info( f"\nTopics:\n   {topicstxt}" )
 
     def _get_positions( self, partitions ):
         return self.consumer.position( partitions )
