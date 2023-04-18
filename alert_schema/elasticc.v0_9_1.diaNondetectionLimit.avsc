@@ -1,5 +1,5 @@
 {
-	"namespace": "elasticc.v0_9",
+	"namespace": "elasticc.v0_9_1",
 	"name": "diaNondetectionLimit",
 	"type": "record",
 	"fields": [

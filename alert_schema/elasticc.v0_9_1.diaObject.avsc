@@ -1,13 +1,13 @@
 {
-	"namespace": "elasticc.v0_9",
-	"name": "diaObject",
-	"type": "record",
-	"fields": [
-		{"name": "diaObjectId", "type": "long"},
-		{"name": "simVersion",  "type": ["null", "string"], "doc": "diaObject provenance"},
-		{"name": "ra", "type": "double"},
-		{"name": "decl", "type": "double"},
-		{"name": "mwebv", "type": ["null", "float"], "default": null},
+    "namespace": "elasticc.v0_9_1",
+    "name": "diaObject",
+    "type": "record",
+    "fields": [
+        {"name": "diaObjectId", "type": "long"},
+        {"name": "simVersion",  "type": ["null", "string"], "doc": "diaObject provenance"},
+        {"name": "ra", "type": "double"},
+        {"name": "decl", "type": "double"},
+        {"name": "mwebv", "type": ["null", "float"], "default": null},
         {"name": "mwebv_err", "type": ["null", "float"], "default": null},
         {"name": "z_final", "type": ["null", "float"], "default": null},
         {"name": "z_final_err", "type": ["null", "float"], "default": null},
@@ -28,7 +28,6 @@
         {"name": "hostgal_zphot_q080", "type": ["null", "float"], "default": null},
         {"name": "hostgal_zphot_q090", "type": ["null", "float"], "default": null},
         {"name": "hostgal_zphot_q100", "type": ["null", "float"], "default": null},
-        {"name": "hostgal_zphot_p50", "type": ["null", "float"], "default": null},
         {"name": "hostgal_mag_u", "type": ["null", "float"], "default": null},
         {"name": "hostgal_mag_g", "type": ["null", "float"], "default": null},
         {"name": "hostgal_mag_r", "type": ["null", "float"], "default": null},
@@ -61,7 +60,6 @@
         {"name": "hostgal2_zphot_q080", "type": ["null", "float"], "default": null},
         {"name": "hostgal2_zphot_q090", "type": ["null", "float"], "default": null},
         {"name": "hostgal2_zphot_q100", "type": ["null", "float"], "default": null},
-        {"name": "hostgal2_zphot_p50", "type": ["null", "float"], "default": null},
         {"name": "hostgal2_mag_u", "type": ["null", "float"], "default": null},
         {"name": "hostgal2_mag_g", "type": ["null", "float"], "default": null},
         {"name": "hostgal2_mag_r", "type": ["null", "float"], "default": null},
@@ -77,5 +75,5 @@
         {"name": "hostgal2_magerr_i", "type": ["null", "float"], "default": null},
         {"name": "hostgal2_magerr_z", "type": ["null", "float"], "default": null},
         {"name": "hostgal2_magerr_Y", "type": ["null", "float"], "default": null}
-	]
+    ]
 }
