@@ -5,13 +5,13 @@
     "doc": "sample avro alert schema v4.1",
     "fields": [
         {"name": "alertId", "type": "long", "doc": "unique alert identifer"},
-        {"name": "diaSource", "type": "elasticc.v0_9.diaSource"},
+        {"name": "diaSource", "type": "elasticc.v0_9_1.diaSource"},
         {"name": "prvDiaSources", "type": ["null", {
              "type": "array",
-             "items": "elasticc.v0_9.diaSource"}], "default": null},
+             "items": "elasticc.v0_9_1.diaSource"}], "default": null},
         {"name": "prvDiaForcedSources", "type": ["null", {
              "type": "array",
-             "items": "elasticc.v0_9.diaForcedSource"}], "default": null},
-        {"name": "diaObject", "type": ["null", "elasticc.v0_9.diaObject"], "default": null},
+             "items": "elasticc.v0_9_1.diaForcedSource"}], "default": null},
+        {"name": "diaObject", "type": ["null", "elasticc.v0_9_1.diaObject"], "default": null}
     ]
 }

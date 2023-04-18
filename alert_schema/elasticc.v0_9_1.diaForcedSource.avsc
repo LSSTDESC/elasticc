@@ -8,6 +8,6 @@
         {"name": "midPointTai", "type": "double"},
         {"name": "filterName", "type": "string"},
         {"name": "psFlux", "type": "float"},
-        {"name": "psFluxErr", "type": "float"},
+        {"name": "psFluxErr", "type": "float"}
     ]
 }

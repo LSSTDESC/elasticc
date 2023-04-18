@@ -11,6 +11,6 @@
         {"name": "decl", "type": "double"},
         {"name": "psFlux", "type": "float"},
         {"name": "psFluxErr", "type": "float"},
-        {"name": "snr", "type": "float"},
+        {"name": "snr", "type": "float"}
     ]
 }
