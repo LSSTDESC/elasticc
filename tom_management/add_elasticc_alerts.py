@@ -1,3 +1,5 @@
+raise RuntimeError( "Deprecated.  See elasticc2/management/commands/load_snana_fits.py in desc-tom" )
+
 import sys
 import io
 import time

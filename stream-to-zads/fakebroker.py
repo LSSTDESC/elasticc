@@ -60,12 +60,12 @@ class Classifier:
                           "brokerIngestTimestamp": datetime.datetime.now(),
                           "brokerName": self.brokername,
                           "brokerVersion": self.brokerversion,
+                          "classifierName": self.classifiername,
+                          "classifierParams": self.classifierparams,
                           "classifications": []
                          }
             for prob in probs:
-                brokermsg['classifications'].append( { "classifierName": self.classifiername,
-                                                       "classifierParams": self.classifierparams,
-                                                       "classId": prob[0],
+                brokermsg['classifications'].append( { "classId": prob[0],
                                                        "probability": prob[1] } )
             outdata = io.BytesIO()
             fastavro.write.schemaless_writer( outdata, self.brokermessageschema, brokermsg )
@@ -120,10 +120,10 @@ def main():
     parser.add_argument( "--dest", default="brahms.lbl.gov:9092",
                          help="Server to push broker message alerts to" )
     parser.add_argument( "-u", "--dest-topic", required=True, help="Topic on dest server" )
-    parser.add_argument( "-s", "--alert-schema", default=f"{_rundir.parent}/alert_schema/elasticc.v0_9.alert.avsc",
+    parser.add_argument( "-s", "--alert-schema", default=f"{_rundir.parent}/alert_schema/elasticc.v0_9_1.alert.avsc",
                          help="File with elasticc alert schema" )
     parser.add_argument( "-b", "--brokermessage-schema",
-                         default=f"{_rundir.parent}/alert_schema/elasticc.v0_9.brokerClassification.avsc",
+                         default=f"{_rundir.parent}/alert_schema/elasticc.v0_9_1.brokerClassification.avsc",
                          help="File with broker message alert schema" )
     
     args = parser.parse_args()
