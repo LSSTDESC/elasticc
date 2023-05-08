@@ -1,3 +1,6 @@
+raise RuntimeError( "This script may be obsolete, as the TOM itself how has the ability "
+                    "to construct and stream alerts from its database." )
+    
 import sys
 import os
 import re
