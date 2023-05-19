@@ -1,3 +1,5 @@
+raise RuntimeError( "Deprecated.  See elasticc2/management/commands/send_elasticc2_alerts.py in desc-tom" )
+
 import sys
 import os
 import re

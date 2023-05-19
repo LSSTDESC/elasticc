@@ -188,7 +188,6 @@ class MsgConsumer(object):
             timestamp = msg.timestamp()
             ofp.write( f"Timestamp: {timestamp[1]} (type {timestamp_name[timestamp[0]]})\n" )
             ofp.write( "MESSAGE PAYLOAD:\n" )
-            import pdb; pdb.set_trace()
             alert = fastavro.schemaless_reader( io.BytesIO(msg.value()), self.schema )
             # # They are datetime -- Convert to numbers
             # alert['elasticcPublishTimestamp'] = alert['elasticcPublishTimestamp'].timestamp()
