@@ -91,6 +91,32 @@ class elasticc2_snana_reader:
         return self._obj_class_names
 
 
+    # For ELAsTiCC2, PHOTFLAG has the following definitions:
+    #  
+    #   PHOTFLAG_SATURATE:    1024   0x0400
+    #   PHOTFLAG_TRIGGER:     2048   0x0800
+    #   PHOTFLAG_DETECT:      4096   0x1000
+
+    @property
+    def photflag_saturate( self ):
+        """Bitwise AND the PHOTFLAG field with this to find saturated points."""
+        return 0x0400
+
+    @property
+    def photflag_trigger( self ):
+        """Bitwise AND the PHOTFLAG field with this to find the first point of each object that triggered dtection."""
+        return 0x0800
+
+    @property
+    def photflag_detect( self ):
+        """Bitwise AND the PHOTFLAG field with this to find detected points.
+
+        (Including all points simulates forced photometry.)
+
+        """
+        return 0x1000
+
+    
     def get_object_truth( self, obj_class_name, return_format='polars' ):
         """Read the object truth table for a given class.
 
