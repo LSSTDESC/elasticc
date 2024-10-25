@@ -1,0 +1,212 @@
+The schema below don't include which things are foreign keys to which
+other things.  Usually the mapping is pretty obvious, as the column name
+is the same in both tables.  Use the PostgreSQL information_schema
+interface if you really need that information (or ask Rob).
+
+                    Table "public.elasticc2_diaobject"
+        Column        |       Type       | Collation | Nullable | Default 
+----------------------+------------------+-----------+----------+---------
+ diaobject_id         | bigint           |           | not null | 
+ simversion           | text             |           |          | 
+ ra                   | double precision |           | not null | 
+ decl                 | double precision |           | not null | 
+ mwebv                | real             |           |          | 
+ mwebv_err            | real             |           |          | 
+ z_final              | real             |           |          | 
+ z_final_err          | real             |           |          | 
+ hostgal_ellipticity  | real             |           |          | 
+ hostgal_sqradius     | real             |           |          | 
+ hostgal_zspec        | real             |           |          | 
+ hostgal_zspec_err    | real             |           |          | 
+ hostgal_zphot        | real             |           |          | 
+ hostgal_zphot_err    | real             |           |          | 
+ hostgal_zphot_q000   | real             |           |          | 
+ hostgal_zphot_q010   | real             |           |          | 
+ hostgal_zphot_q020   | real             |           |          | 
+ hostgal_zphot_q030   | real             |           |          | 
+ hostgal_zphot_q040   | real             |           |          | 
+ hostgal_zphot_q050   | real             |           |          | 
+ hostgal_zphot_q060   | real             |           |          | 
+ hostgal_zphot_q070   | real             |           |          | 
+ hostgal_zphot_q080   | real             |           |          | 
+ hostgal_zphot_q090   | real             |           |          | 
+ hostgal_zphot_q100   | real             |           |          | 
+ hostgal_mag_u        | real             |           |          | 
+ hostgal_mag_g        | real             |           |          | 
+ hostgal_mag_r        | real             |           |          | 
+ hostgal_mag_i        | real             |           |          | 
+ hostgal_mag_z        | real             |           |          | 
+ hostgal_mag_y        | real             |           |          | 
+ hostgal_ra           | real             |           |          | 
+ hostgal_dec          | real             |           |          | 
+ hostgal_snsep        | real             |           |          | 
+ hostgal_magerr_u     | real             |           |          | 
+ hostgal_magerr_g     | real             |           |          | 
+ hostgal_magerr_r     | real             |           |          | 
+ hostgal_magerr_i     | real             |           |          | 
+ hostgal_magerr_z     | real             |           |          | 
+ hostgal_magerr_y     | real             |           |          | 
+ hostgal2_ellipticity | real             |           |          | 
+ hostgal2_sqradius    | real             |           |          | 
+ hostgal2_zspec       | real             |           |          | 
+ hostgal2_zspec_err   | real             |           |          | 
+ hostgal2_zphot       | real             |           |          | 
+ hostgal2_zphot_err   | real             |           |          | 
+ hostgal2_zphot_q000  | real             |           |          | 
+ hostgal2_zphot_q010  | real             |           |          | 
+ hostgal2_zphot_q020  | real             |           |          | 
+ hostgal2_zphot_q030  | real             |           |          | 
+ hostgal2_zphot_q040  | real             |           |          | 
+ hostgal2_zphot_q050  | real             |           |          | 
+ hostgal2_zphot_q060  | real             |           |          | 
+ hostgal2_zphot_q070  | real             |           |          | 
+ hostgal2_zphot_q080  | real             |           |          | 
+ hostgal2_zphot_q090  | real             |           |          | 
+ hostgal2_zphot_q100  | real             |           |          | 
+ hostgal2_mag_u       | real             |           |          | 
+ hostgal2_mag_g       | real             |           |          | 
+ hostgal2_mag_r       | real             |           |          | 
+ hostgal2_mag_i       | real             |           |          | 
+ hostgal2_mag_z       | real             |           |          | 
+ hostgal2_mag_y       | real             |           |          | 
+ hostgal2_ra          | real             |           |          | 
+ hostgal2_dec         | real             |           |          | 
+ hostgal2_snsep       | real             |           |          | 
+ hostgal2_magerr_u    | real             |           |          | 
+ hostgal2_magerr_g    | real             |           |          | 
+ hostgal2_magerr_r    | real             |           |          | 
+ hostgal2_magerr_i    | real             |           |          | 
+ hostgal2_magerr_z    | real             |           |          | 
+ hostgal2_magerr_y    | real             |           |          | 
+ isddf                | boolean          |           | not null | 
+Indexes:
+    "elasticc2_diaobject_pkey" PRIMARY KEY, btree (diaobject_id)
+    "idx_elasticc2_diaobject_q3c" btree (q3c_ang2ipix(ra, decl))
+
+
+
+                Table "public.elasticc2_diasource"
+    Column    |       Type       | Collation | Nullable | Default 
+--------------+------------------+-----------+----------+---------
+ diasource_id | bigint           |           | not null | 
+ midpointtai  | double precision |           | not null | 
+ filtername   | text             |           | not null | 
+ ra           | double precision |           | not null | 
+ decl         | double precision |           | not null | 
+ psflux       | real             |           | not null | 
+ psfluxerr    | real             |           | not null | 
+ snr          | real             |           | not null | 
+ diaobject_id | bigint           |           |          | 
+Indexes:
+    "elasticc2_diasource_pkey" PRIMARY KEY, btree (diasource_id)
+    "elasticc2_diasource_diaobject_id_597363da" btree (diaobject_id)
+    "elasticc2_diasource_midPointTai_f4168933" btree (midpointtai)
+    "idx_elasticc2_diasource_q3c" btree (q3c_ang2ipix(ra, decl))
+
+
+
+                Table "public.elasticc2_diaforcedsource"
+       Column       |       Type       | Collation | Nullable | Default 
+--------------------+------------------+-----------+----------+---------
+ diaforcedsource_id | bigint           |           | not null | 
+ midpointtai        | double precision |           | not null | 
+ filtername         | text             |           | not null | 
+ psflux             | real             |           | not null | 
+ psfluxerr          | real             |           | not null | 
+ diaobject_id       | bigint           |           | not null | 
+Indexes:
+    "elasticc2_diaforcedsource_pkey" PRIMARY KEY, btree (diaforcedsource_id)
+    "elasticc2_diaforcedsource_diaobject_id_8de7d36e" btree (diaobject_id)
+    "elasticc2_diaforcedsource_midPointTai_b15bb818" btree (midpointtai)
+
+
+
+                               Table "public.elasticc2_brokerclassifier"
+      Column      |           Type           | Collation | Nullable |             Default              
+------------------+--------------------------+-----------+----------+----------------------------------
+ classifier_id    | bigint                   |           | not null | generated by default as identity
+ brokername       | character varying(100)   |           | not null | 
+ brokerversion    | text                     |           |          | 
+ classifiername   | character varying(200)   |           | not null | 
+ classifierparams | text                     |           |          | 
+ modified         | timestamp with time zone |           | not null | 
+Indexes:
+    "elasticc2_brokerclassifier_pkey" PRIMARY KEY, btree (classifier_id)
+    "elasticc2_b_brokern_177700_idx" btree (brokername, classifiername)
+    "elasticc2_b_brokern_7aa2ad_idx" btree (brokername, brokerversion)
+    "elasticc2_b_brokern_de7788_idx" btree (brokername)
+    "elasticc2_b_brokern_fad924_idx" btree (brokername, brokerversion, classifiername, classifierparams)
+
+
+
+                                    Table "public.elasticc2_brokermessage"
+          Column          |           Type           | Collation | Nullable |             Default              
+--------------------------+--------------------------+-----------+----------+----------------------------------
+ brokermessage_id         | bigint                   |           | not null | generated by default as identity
+ streammessage_id         | bigint                   |           |          | 
+ topicname                | character varying(200)   |           |          | 
+ alert_id                 | bigint                   |           | not null | 
+ diasource_id             | bigint                   |           | not null | 
+ msghdrtimestamp          | timestamp with time zone |           |          | 
+ descingesttimestamp      | timestamp with time zone |           | not null | 
+ elasticcpublishtimestamp | timestamp with time zone |           |          | 
+ brokeringesttimestamp    | timestamp with time zone |           |          | 
+ classid                  | smallint[]               |           | not null | 
+ classifier_id            | bigint                   |           | not null | 
+ probability              | real[]                   |           | not null | 
+Indexes:
+    "elasticc2_brokermessage_pkey" PRIMARY KEY, btree (brokermessage_id)
+    "elasticc2_brokermessage_alert_id_e70d1567" btree (alert_id)
+    "elasticc2_brokermessage_classifier_id_fc087abe" btree (classifier_id)
+    "elasticc2_brokermessage_descingesttimestamp_5072267b" btree (descingesttimestamp)
+    "elasticc2_brokermessage_diasource_id_ea301371" btree (diasource_id)
+
+
+
+                Table "public.elasticc2_diaobjecttruth"
+       Column       |       Type       | Collation | Nullable | Default 
+--------------------+------------------+-----------+----------+---------
+ libid              | integer          |           | not null | 
+ sim_searcheff_mask | integer          |           | not null | 
+ gentype            | integer          |           | not null | 
+ sim_template_index | integer          |           | not null | 
+ zcmb               | real             |           | not null | 
+ zhelio             | real             |           | not null | 
+ zcmb_smear         | real             |           | not null | 
+ ra                 | double precision |           | not null | 
+ dec                | double precision |           | not null | 
+ mwebv              | real             |           | not null | 
+ galid              | bigint           |           |          | 
+ galzphot           | real             |           |          | 
+ galzphoterr        | real             |           |          | 
+ galsnsep           | real             |           |          | 
+ galsnddlr          | real             |           |          | 
+ rv                 | real             |           | not null | 
+ av                 | real             |           | not null | 
+ mu                 | real             |           | not null | 
+ lensdmu            | real             |           | not null | 
+ peakmjd            | real             |           | not null | 
+ mjd_detect_first   | double precision |           | not null | 
+ mjd_detect_last    | double precision |           | not null | 
+ dtseason_peak      | real             |           | not null | 
+ peakmag_u          | real             |           | not null | 
+ peakmag_g          | real             |           | not null | 
+ peakmag_r          | real             |           | not null | 
+ peakmag_i          | real             |           | not null | 
+ peakmag_z          | real             |           | not null | 
+ peakmag_y          | real             |           | not null | 
+ snrmax             | real             |           | not null | 
+ snrmax2            | real             |           | not null | 
+ snrmax3            | real             |           | not null | 
+ nobs               | integer          |           | not null | 
+ nobs_saturate      | integer          |           | not null | 
+ diaobject_id       | bigint           |           | not null | 
+Indexes:
+    "elasticc2_diaobjecttruth_pkey" PRIMARY KEY, btree (diaobject_id)
+    "elasticc2_diaobjecttruth_gentype_2556e91f" btree (gentype)
+    "elasticc2_diaobjecttruth_mjd_detect_first_0d848f4e" btree (mjd_detect_first)
+    "elasticc2_diaobjecttruth_mjd_detect_last_0cc4d44e" btree (mjd_detect_last)
+    "elasticc2_diaobjecttruth_peakmjd_6f57b2d9" btree (peakmjd)
+    "elasticc2_diaobjecttruth_sim_template_index_ac66e808" btree (sim_template_index)
+    "elasticc2_diaobjecttruth_zcmb_1c9a663e" btree (zcmb)
+    "elasticc2_diaobjecttruth_zhelio_0fd095ea" btree (zhelio)
