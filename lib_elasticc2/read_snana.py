@@ -29,7 +29,7 @@ class elasticc2_snana_reader:
     """A class for reading the ELAsTiCC2 SNANA FITS files in to Pandas data frames."""
 
     def __init__( self, elasticc2_snana_dir=pathlib.Path( os.getenv('TD', "/global/cfs/cdirs/desc-td") ) / "ELASTICC2",
-                  waste_memory_on_heads=False, logger=None ):
+                  dir_prefix='ELASTICC2_FINAL_', waste_memory_on_heads=False, logger=None ):
         """Create a reader.
 
         Parameters
@@ -61,11 +61,14 @@ class elasticc2_snana_reader:
         if not self.elasticc2_snana_dir.is_dir():
             raise RuntimeError( f"Can't open directory {self.elasticc2_snana_dir}" )
 
+        self.dir_prefix=dir_prefix
+
         self.subdirs = {}
-        subdirs = self.elasticc2_snana_dir.glob( "ELASTICC2_FINAL*" )
+        subdirs = self.elasticc2_snana_dir.glob( f"{self.dir_prefix}*" )
         for subdir in subdirs:
-            match = re.search( r"^ELASTICC2_FINAL_(.*)$", subdir.name )
-            self.subdirs[ match.group(1) ] = subdir
+            if pathlib.Path( subdir ).is_dir():
+                match = re.search( f"^{self.dir_prefix}(.*)$", subdir.name )
+                self.subdirs[ match.group(1) ] = subdir
         self._obj_class_names = list( self.subdirs.keys() )
         self._obj_class_names.sort()
         # We could cache all of the head files in a dictionary,
@@ -92,7 +95,7 @@ class elasticc2_snana_reader:
 
 
     # For ELAsTiCC2, PHOTFLAG has the following definitions:
-    #  
+    #
     #   PHOTFLAG_SATURATE:    1024   0x0400
     #   PHOTFLAG_TRIGGER:     2048   0x0800
     #   PHOTFLAG_DETECT:      4096   0x1000
@@ -116,7 +119,7 @@ class elasticc2_snana_reader:
         """
         return 0x1000
 
-    
+
     def get_object_truth( self, obj_class_name, return_format='polars' ):
         """Read the object truth table for a given class.
 
