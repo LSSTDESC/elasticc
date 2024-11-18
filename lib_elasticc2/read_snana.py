@@ -37,10 +37,17 @@ class elasticc2_snana_reader:
           elasticc2_sana_dir : str or Path
             The directory where all the SNANA FITS files are found.
             This file should contain nothing but 38 subdirectories, each
-            named ELASTIC2_FINAL_<classname>.  Defaults to $TD/ELASTICC2
+            named {dir_prefix}<classname>.  Defaults to $TD/ELASTICC2
             if the TD env var is set, otherwise to
             /global/cfs/cdirs/desc-td/ELASTICC2 (the location on NERSC).
 
+          dir_prefix: str
+            What do all the subdirectories (and files within them) start
+            with?  This defaults to ELASTICC2_FINAL_, which is right for
+            the ELAsTiCC2 test set.  Make it ELASTICC2_TRAIN_02_ for the
+            ELAsTiCC2 training set (with, of course, elasticc2_snana_dir
+            pointing at directory with the training files.)
+        
           waste_memory_on_heads : bool, default False
             If True, whenever you read the HEAD files for a new object,
             it will cache that head file so that next time you need to
@@ -146,7 +153,7 @@ class elasticc2_snana_reader:
         if return_format not in ('polars', 'pandas'):
             raise ValueError( f"Unknown return_format {return_format}" )
 
-        dumpfile = self.elasticc2_snana_dir / self.subdirs[obj_class_name] / f"ELASTICC2_FINAL_{obj_class_name}.DUMP"
+        dumpfile = self.elasticc2_snana_dir / self.subdirs[obj_class_name] / f"{self.dir_prefix}{obj_class_name}.DUMP"
         if not dumpfile.is_file():
             raise FileNotFoundError( f"Can't find truth file {dumpfile}" )
         self.logger.info( f"Reading {dumpfile}" )
